@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Webapp on -pvik-</title>
+    <link>https://pvik.github.io/tags/webapp/</link>
+    <description>Recent content in Webapp on -pvik-</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 30 Aug 2018 18:28:33 -0400</lastBuildDate>
+    
+	<atom:link href="https://pvik.github.io/tags/webapp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using Buddy for Authentication</title>
+      <link>https://pvik.github.io/blog/using-buddy-for-authentication/</link>
+      <pubDate>Thu, 30 Aug 2018 18:28:33 -0400</pubDate>
+      
+      <guid>https://pvik.github.io/blog/using-buddy-for-authentication/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

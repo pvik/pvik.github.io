@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on -pvik-</title>
+    <link>https://pvik.github.io/projects/</link>
+    <description>Recent content in Projects on -pvik-</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 02 Feb 2018 10:12:27 -0500</lastBuildDate>
+    
+	<atom:link href="https://pvik.github.io/projects/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kiosa</title>
+      <link>https://pvik.github.io/projects/kiosa/</link>
+      <pubDate>Fri, 02 Feb 2018 10:12:27 -0500</pubDate>
+      
+      <guid>https://pvik.github.io/projects/kiosa/</guid>
+      <description>An e-commerce site aimed at helping makers Rapid prototype their designs and models. Helping builders connect with designers, artists and other makers.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>https://pvik.github.io/projects/projects/</link>
+      <pubDate>Fri, 02 Feb 2018 10:11:48 -0500</pubDate>
+      
+      <guid>https://pvik.github.io/projects/projects/</guid>
+      <description>List of projects I am currently working on.</description>
+    </item>
+    
+  </channel>
+</rss>
