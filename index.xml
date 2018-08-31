@@ -12,12 +12,13 @@
     
     
     <item>
-      <title>Using Buddy for Authentication</title>
-      <link>https://pvik.github.io/blog/using-buddy-for-authentication/</link>
+      <title>Using Buddy for Authentication with JWT</title>
+      <link>https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/</link>
       <pubDate>Thu, 30 Aug 2018 18:28:33 -0400</pubDate>
       
-      <guid>https://pvik.github.io/blog/using-buddy-for-authentication/</guid>
-      <description></description>
+      <guid>https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/</guid>
+      <description>buddy is a set of clojure modules and libraries to incorporate various security feature in your ring application. It is also fairly non-opinionated allowing you to decide how to handle various scenarios. Check out their github page to know more about the library. Their documentation can be found here. They also have basic examples for using various authentication schemes here.
+In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT) and also setup access rules to make sure certain routes can only be accessed with specific authorization levels.</description>
     </item>
     
     <item>

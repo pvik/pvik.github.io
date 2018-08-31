@@ -13,9 +13,9 @@
 <meta property="og:site_name" content="-pvik-" />
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://pvik.github.io/projects/" />
-<meta property="og:title" content="Projects" />
-<meta property="twitter:title" content="Projects">
+<meta property="og:url" content="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/" />
+<meta property="og:title" content="Using Buddy for Authentication with JWT" />
+<meta property="twitter:title" content="Using Buddy for Authentication with JWT">
 
     <meta property="twitter:card" content="summary">
 
@@ -25,10 +25,10 @@
 <title>
 
 
-     -pvik- - Projects 
+     -pvik- - Using Buddy for Authentication with JWT 
 
 </title>
-<link rel="canonical" href="https://pvik.github.io/projects/">
+<link rel="canonical" href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/">
 
 
 <style media="screen">
@@ -976,8 +976,6 @@ margin-left: -4%;
 
 
 
-  <link href="https://pvik.github.io/projects/index.xml" rel="alternate" type="application/rss+xml" title="-pvik-" />
-
 
 </head>
 
@@ -985,7 +983,7 @@ margin-left: -4%;
 <body>
 
 
-<div class="header header-home column">
+<div class="header column">
 
     <div class="container">
         <a href="https://pvik.github.io/"><img class="logo" src="https://pvik.github.io/img/logo3.png" alt="logo" /></a>
@@ -1020,41 +1018,251 @@ margin-left: -4%;
     </div>
 </div>
 
-<div class="main column">
+
+<div class="main post non-narrow zero-top-spacing column">
     <div class="container">
         <div class="content">
-            
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Using Buddy for Authentication with JWT
+
+</div>
+
+                </div>
+                <div class="meta">
+                    <div class="date" title="Thu Aug 30 2018 18:28:33 EST">2018-08-30</div>
+                    
+                        
+                    
+                    <div class="reading-time middot">5 minute read</div>
+                    <div class="tags">
+                        <ul>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/clojure">Clojure</a> </li>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/webapp">WebApp</a> </li>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/programming">Programming</a> </li>
+                          
+                        </ul>
+                    </div>
+                    <div class="tags">
+                        <ul>
+                          
+                          
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <div class="markdown">
                 
-                    
-                
-                    
-                        <p>List of projects I am currently working on.</p>
+    
+    <p><code>buddy</code> is a set of clojure modules and libraries to incorporate various security feature in your ring application. It is also fairly non-opinionated allowing you to decide how to handle various scenarios. Check out their <a href="https://github.com/funcool/buddy">github page</a> to know more about the library. Their documentation can be found <a href="https://funcool.github.io/buddy-auth/latest/">here</a>. They also have basic examples for using various authentication schemes <a href="https://github.com/funcool/buddy-auth/tree/master/examples">here</a>.</p>
 
+<p>In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT) and also setup access rules to make sure certain <code>routes</code> can only be accessed with specific authorization levels. If you are not familiar with JWT, <a href="https://jwt.io/introduction/">This</a> article does a good job of explaining the basics.</p>
+
+<p>Before we start, add the following buddy dependencies to your <code>build.boot</code> or <code>project.clj</code> file.</p>
+
+<pre><code>[buddy/buddy-auth &quot;2.1.0&quot;]
+[buddy/buddy-core &quot;1.5.0&quot;]
+[buddy/buddy-sign &quot;3.0.0&quot;]
+</code></pre>
+
+<p>Let us start off by defining a separate <code>namespace</code> to hold all our authentication/authorization code.</p>
+
+<pre><code>(ns buddy-sample-jwt.auth
+  (:require
+   [buddy.sign.jwt :as jwt]
+   [buddy.auth.backends.token :refer [jws-backend]]
+   [buddy.auth.accessrules :refer (success error)]
+   [buddy.auth :refer [authenticated?]]
+   [clj-time.core :as time]
+   [clojure.data.codec.base64 :as b64]
+   [taoensso.timbre :as log]
+   [buddy-sample-jwt.data.user :as user]))
+
+;; Secret used in HMAC Signing of JWT
+;;   New secret generated on application start
+;;   Take 5 random number, concatenate them and convert to base64
+(defonce secret
+  (String.
+   (b64/encode
+    (.getBytes
+     (apply str (take 5 (repeatedly #(str (rand)))))))
+   &quot;UTF-8&quot;))
+
+;; Create an instance of auth backend.
+(def auth-backend (jws-backend {:secret secret :options {:alg :hs512}}))
+
+;; Semantic response helpers
+(defn ok [d] {:status 200 :body d})
+(defn bad-request [d] {:status 400 :body d})
+
+(defn authenticate
+  &quot;Checks if request (with username/password :query-params)
+  or username/password is valid&quot;
+  ([request]
+   (let [username (get-in request [:params :username])
+         password (get-in request [:params :password])]
+     (authenticate username password)))
+  ([username password]
+   (if (and username password)
+     (user/login? username password)
+     false)))
+
+;; authentication handler used with buddy ring wrappers
+(defn auth-handler
+  [request]
+  (if (authenticate request)
+    (let [username (get-in request [:params :username])
+          password (get-in request [:params :password])
+          claims {:user (keyword username)
+			      :admin? (user/is-admin? username)
+                  :exp (time/plus (time/now) (time/seconds 3600))}
+          token (jwt/sign claims secret {:alg :hs512})]
+      (ok {:token token}))
+    (bad-request {:message &quot;invalid auth data&quot;})))
+
+;; Access Level Handlers
+
+(defn authenticated-access
+  &quot;Check if request coming in is authenticated with user/password
+  or a valid JWT token&quot;
+  [request]
+  (if (or (authenticated? request)
+          (authenticate request))
+    true
+    (error &quot;access not allowed&quot;)))
+	
+(defn admin-access
+  &quot;Check if request with JWT token has :is-admin? claim&quot;
+  [request]
+  (if (and (:identity request)
+           (:is-admin? (:identity request)))
+    true
+    (error &quot;requires admin access&quot;)))
+</code></pre>
+
+<p>In the above code we have 3 main pieces which buddy requires.</p>
+
+<ol>
+<li>An authentication backend (<code>auth-backend</code>). This will determine if your <code>buddy</code> ring wrappers (explained below) is going to use Session tokens, JWT or other authentication schemes.</li>
+<li>An authentication handler (<code>auth-handler</code>). This function should be called when you want to authenticate an incoming request (with a username and password) and generate a JWT token. We will see this being called from our <code>/login</code> route definition below in <code>buddy-sample-jwt.routes</code>.</li>
+<li>We also define our access level handlers (<code>authenticated-access</code> and <code>admin-access</code>).</li>
+</ol>
+
+<p>In our above code we also have <code>login?</code> from <code>user</code> namespace. This function determines if a <code>[username, password]</code> is valid. This can be whatever matches your application. For example, query the Database for the user&rsquo;s password-hash and match it with the hash of the password provided.</p>
+
+<blockquote>
+<p>I will post an article on how to use Argon2 in your clojure app for hashing your passwords in a future post and link it here.</p>
+</blockquote>
+
+<p>Next, let us look at how we configure our ring app to insert our <code>buddy</code> ring wrappers.</p>
+
+<pre><code>(ns buddy-sample-jwt.core
+  (:require [compojure.handler        :as    handler]
+            [ring.middleware.json     :refer [wrap-json-response]]
+            [buddy.auth.middleware    :refer [wrap-authentication wrap-authorization]]
+            [buddy.auth.accessrules   :refer [wrap-access-rules]]
+            [taoensso.timbre          :as    log]
+            [buddy-sample-jwt.routes  :refer [app-handler access-rules]]
+            [buddy-sample-jwt.auth    :refer [auth-backend]])
+  (:gen-class))
+
+(defn on-error
+  [request value]
+  {:status 403
+   :headers {}
+   :body &quot;Not authorized&quot;})
+
+(def app (as-&gt; #'app-handler $
+           (wrap-access-rules $ {:rules access-rules :on-error on-error})
+           (wrap-authorization $ auth-backend)
+           (wrap-authentication $ auth-backend)
+           (wrap-json-response $)
+           (handler/site $)))
+</code></pre>
+
+<p>We are using three <code>buddy</code> wrappers here. The <code>wrap-authorization</code> and <code>wrap-authentication</code> wrappers both take in the <code>auth-backend</code> we defined above. They also parse the JWT Token in the Authorization Header of the request and create the <code>:identity</code> key mapped to the <code>claims</code> from the JWT in the request and pass it along.</p>
+
+<p>The <code>wrap-access-rules</code> sets the access controls. If you do not want any access level controls, you can skip this wrapper.</p>
+
+<p>Finally, let us see how to set up access rules</p>
+
+<pre><code>(ns buddy-sample-jwt.routes
+  (:require [compojure.core     :refer [defroutes context routes GET POST]]
+            [compojure.route    :refer [not-found files resources]]
+            [ring.util.response :refer [response]]
+            [taoensso.timbre    :as    log]
+            [buddy-sample-jwt.auth :as auth]
+            [buddy-sample-jwt.api  :as api]))
+
+(defroutes api-routes
+  (context &quot;/api&quot; []
+           (GET &quot;/instances&quot; [] api/get-instancces)
+           (GET &quot;/ticket/:id&quot; [id]
+                    (api/get-ticket id))
+           (GET &quot;/tickets&quot; [list style qual limit page]
+                (api/get-tickets list style qual limit page))))
+
+(defroutes gen-routes 
+  (GET &quot;/&quot; [] &quot;Hello from Compojure!&quot;)  ;; for testing only
+  (GET &quot;/login&quot; [] auth/auth-handler)   ;; authenticate user
+  (files &quot;/&quot; {:root &quot;target&quot;})          ;; to serve static resources
+  (resources &quot;/&quot; {:root &quot;target&quot;})      ;; to serve anything else
+  (not-found &quot;404 Page Not Found&quot;))     ;; page not found
+
+(defn any-access [_]
+  true)
+
+(def access-rules [{:pattern #&quot;^/login$&quot;
+                    :handler any-access}
+                   {:pattern #&quot;^/api/.*&quot;
+                    :handler auth/authenticated-access}
+				   {:pattern #&quot;^/admin/.*&quot;
+                    :handler auth/admin-access}])
+
+(def app-handler (routes api-routes
+                         gen-routes))
+
+</code></pre>
+
+<p>Points to note here are</p>
+
+<ol>
+<li>We are defining our <code>/login</code> route to be handled with our <code>auth/auth-handler</code>. When a user accesses this endpoint with a valid <code>[username password]</code> pair, they will receive a signed JWT token, which they can use for future access calls to our server.</li>
+<li>We define our <code>access-rules</code>, which we passed to the <code>wrap-access-rules</code> wrapper. So any request a user makes to any <code>/api/*</code> endpoint will require a valid username password pair or an unexpired, signed JWT token. You can combine multiple access rules using <code>:or</code> or <code>:and</code> like so</li>
+</ol>
+
+<pre><code>[{:pattern #&quot;^/foo$&quot;
+  :handler {:and [authenticated-access admin-access}}]
+
+</code></pre>
+
+<p>Check the <a href="https://funcool.github.io/buddy-auth/latest/#access-rules">documentation</a> for more info on advanced access rules.</p>
+
+
+                <br>
+            </div>
+            
+            
+                <div class="navigation">
                     
+                    <div style="width: 100%;"></div>
+                    
+                </div>
+            
+            <br>
+            <div class="disqus">
                 
             </div>
-            <div class="posts">
             
-                <div class="page-heading">Projects</div>
-                <ul>
-                    
-                        
-                    
-                        
-                            <li class="post-item">
-    <span class="meta">2018-02-02</span>
-    <a href="https://pvik.github.io/projects/kiosa/"><span>Kiosa</span></a>
-</li>
-
-                        
-                    
-                </ul>
-            
-            </div>
         </div>
     </div>
 </div>
+
 <div class="footer column">
     <div class="container">
 
