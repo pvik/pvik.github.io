@@ -8,6 +8,11 @@
   </url>
   
   <url>
+    <loc>https://pvik.github.io/projects/report-gen/</loc>
+    <lastmod>2018-05-03T10:23:41-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://pvik.github.io/projects/kiosa/</loc>
     <lastmod>2018-02-02T10:12:27-05:00</lastmod>
   </url>
@@ -51,20 +56,20 @@
   </url>
   
   <url>
-    <loc>https://pvik.github.io/categories/programming/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://pvik.github.io/tags/programming/</loc>
     <lastmod>2018-08-30T18:28:33-04:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://pvik.github.io/categories/programming/</loc>
+    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://pvik.github.io/projects/</loc>
-    <lastmod>2018-02-02T10:12:27-05:00</lastmod>
+    <lastmod>2018-05-03T10:23:41-04:00</lastmod>
     <priority>0</priority>
   </url>
   

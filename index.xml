@@ -22,6 +22,15 @@ In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT
     </item>
     
     <item>
+      <title>Report Generator</title>
+      <link>https://pvik.github.io/projects/report-gen/</link>
+      <pubDate>Thu, 03 May 2018 10:23:41 -0400</pubDate>
+      
+      <guid>https://pvik.github.io/projects/report-gen/</guid>
+      <description>A simple clojure application to be generic enough to connect to a RDBMS (Postgres, MSSQL, etc) and run a report query, and dispatch it over various methods (email, ftp, etc).</description>
+    </item>
+    
+    <item>
       <title>Kiosa</title>
       <link>https://pvik.github.io/projects/kiosa/</link>
       <pubDate>Fri, 02 Feb 2018 10:12:27 -0500</pubDate>
