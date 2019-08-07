@@ -3,18 +3,72 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://pvik.github.io/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/blog/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/categories/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/tags/clojure/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/categories/programming/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/tags/programming/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/tags/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/blog/using-argon-for-password-hashes/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/tags/webapp/</loc>
+    <lastmod>2019-07-30T18:28:33-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/</loc>
     <lastmod>2018-08-30T18:28:33-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://pvik.github.io/projects/report-gen/</loc>
-    <lastmod>2018-05-03T10:23:41-04:00</lastmod>
+    <loc>https://pvik.github.io/projects/kiosa/</loc>
+    <lastmod>2018-02-02T10:12:27-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://pvik.github.io/projects/kiosa/</loc>
+    <loc>https://pvik.github.io/projects/</loc>
     <lastmod>2018-02-02T10:12:27-05:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
@@ -30,59 +84,6 @@
   <url>
     <loc>https://pvik.github.io/about/</loc>
     <lastmod>2018-02-02T10:05:03-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/blog/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/tags/clojure/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/tags/programming/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/categories/programming/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/projects/</loc>
-    <lastmod>2018-05-03T10:23:41-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/tags/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/tags/webapp/</loc>
-    <lastmod>2018-08-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
 </urlset>

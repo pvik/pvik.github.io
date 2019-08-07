@@ -1233,13 +1233,14 @@ margin-left: -4%;
 
 <ol>
 <li>We are defining our <code>/login</code> route to be handled with our <code>auth/auth-handler</code>. When a user accesses this endpoint with a valid <code>[username password]</code> pair, they will receive a signed JWT token, which they can use for future access calls to our server.</li>
-<li>We define our <code>access-rules</code>, which we passed to the <code>wrap-access-rules</code> wrapper. So any request a user makes to any <code>/api/*</code> endpoint will require a valid username password pair or an unexpired, signed JWT token. You can combine multiple access rules using <code>:or</code> or <code>:and</code> like so</li>
-</ol>
+
+<li><p>We define our <code>access-rules</code>, which we passed to the <code>wrap-access-rules</code> wrapper. So any request a user makes to any <code>/api/*</code> endpoint will require a valid username password pair or an unexpired, signed JWT token. You can combine multiple access rules using <code>:or</code> or <code>:and</code> like so</p>
 
 <pre><code>[{:pattern #&quot;^/foo$&quot;
-  :handler {:and [authenticated-access admin-access}}]
+:handler {:and [authenticated-access admin-access}}]
 
-</code></pre>
+</code></pre></li>
+</ol>
 
 <p>Check the <a href="https://funcool.github.io/buddy-auth/latest/#access-rules">documentation</a> for more info on advanced access rules.</p>
 
@@ -1251,6 +1252,11 @@ margin-left: -4%;
                 <div class="navigation">
                     
                     <div style="width: 100%;"></div>
+                    
+                    <div>
+                        <a href="https://pvik.github.io/blog/using-argon-for-password-hashes/">Using Argon for Password Hashes</a>
+                        <img class="icon" src="https://pvik.github.io/img/next.svg" alt="next" />
+                    </div>
                     
                 </div>
             

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Webapp on -pvik-</title>
+    <title>WebApp on -pvik-</title>
     <link>https://pvik.github.io/tags/webapp/</link>
-    <description>Recent content in Webapp on -pvik-</description>
+    <description>Recent content in WebApp on -pvik-</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Aug 2018 18:28:33 -0400</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jul 2019 18:28:33 -0400</lastBuildDate>
     
 	<atom:link href="https://pvik.github.io/tags/webapp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Using Argon for Password Hashes</title>
+      <link>https://pvik.github.io/blog/using-argon-for-password-hashes/</link>
+      <pubDate>Tue, 30 Jul 2019 18:28:33 -0400</pubDate>
+      
+      <guid>https://pvik.github.io/blog/using-argon-for-password-hashes/</guid>
+      <description>Include the argon2-jvm dependency in your build.boot or project.clj file.
+[de.mkammerer/argon2-jvm &amp;quot;2.5&amp;quot;]  In the module you need to use argon hashes, import the necessary classes in you namespace (ns) declaration:
+(:import (de.mkammerer.argon2 Argon2Factory Argon2Factory$Argon2Types))  Now you can generate a hash or verify if a string matches a hash like below:
+(defonce ^:private ^:const arg2-iterations 8) (defonce ^:private ^:const arg2-memory 65536) (defonce ^:private ^:const arg2-parallelism 1) (defn- argon2-hash &amp;quot;Hash string with Argon2id&amp;quot; [str-to-be-hashed] (.</description>
+    </item>
     
     <item>
       <title>Using Buddy for Authentication with JWT</title>

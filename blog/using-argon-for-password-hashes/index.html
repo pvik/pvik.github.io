@@ -13,9 +13,9 @@
 <meta property="og:site_name" content="-pvik-" />
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://pvik.github.io/categories/programming/" />
-<meta property="og:title" content="Programming" />
-<meta property="twitter:title" content="Programming">
+<meta property="og:url" content="https://pvik.github.io/blog/using-argon-for-password-hashes/" />
+<meta property="og:title" content="Using Argon for Password Hashes" />
+<meta property="twitter:title" content="Using Argon for Password Hashes">
 
     <meta property="twitter:card" content="summary">
 
@@ -25,10 +25,10 @@
 <title>
 
 
-     -pvik- - Programming 
+     -pvik- - Using Argon for Password Hashes 
 
 </title>
-<link rel="canonical" href="https://pvik.github.io/categories/programming/">
+<link rel="canonical" href="https://pvik.github.io/blog/using-argon-for-password-hashes/">
 
 
 <style media="screen">
@@ -976,8 +976,6 @@ margin-left: -4%;
 
 
 
-  <link href="https://pvik.github.io/categories/programming/index.xml" rel="alternate" type="application/rss+xml" title="-pvik-" />
-
 
 </head>
 
@@ -985,7 +983,7 @@ margin-left: -4%;
 <body>
 
 
-<div class="header header-home column">
+<div class="header column">
 
     <div class="container">
         <a href="https://pvik.github.io/"><img class="logo" src="https://pvik.github.io/img/logo3.png" alt="logo" /></a>
@@ -1020,30 +1018,104 @@ margin-left: -4%;
     </div>
 </div>
 
-<div class="main column">
+
+<div class="main post non-narrow zero-top-spacing column">
     <div class="container">
         <div class="content">
-            <div class="posts">
-                <div class="page-heading">Posts about Programming</div>
-                <ul>
-                    
-                        <li class="post-item">
-    <span class="meta">2018-08-30</span>
-    <a href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/"><span>Using Buddy for Authentication with JWT</span></a>
-</li>
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
 
-                    
-                        <li class="post-item">
-    <span class="meta">2019-07-30</span>
-    <a href="https://pvik.github.io/blog/using-argon-for-password-hashes/"><span>Using Argon for Password Hashes</span></a>
-</li>
+    Using Argon for Password Hashes
 
+</div>
+
+                </div>
+                <div class="meta">
+                    <div class="date" title="Tue Jul 30 2019 18:28:33 EST">2019-07-30</div>
                     
-                </ul>
+                        
+                    
+                    <div class="reading-time middot">1 minute read</div>
+                    <div class="tags">
+                        <ul>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/clojure">Clojure</a> </li>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/webapp">WebApp</a> </li>
+                          
+                            <li class="middot"><a href="https://pvik.github.io/tags/programming">Programming</a> </li>
+                          
+                        </ul>
+                    </div>
+                    <div class="tags">
+                        <ul>
+                          
+                          
+                        </ul>
+                    </div>
+                </div>
             </div>
+            <div class="markdown">
+                
+    
+    <p>Include the <code>argon2-jvm</code> dependency in your <code>build.boot</code> or <code>project.clj</code> file.</p>
+
+<pre><code>[de.mkammerer/argon2-jvm &quot;2.5&quot;]
+</code></pre>
+
+<p>In the module you need to use argon hashes, import the necessary classes in you namespace (<code>ns</code>) declaration:</p>
+
+<pre><code>(:import
+  (de.mkammerer.argon2 
+    Argon2Factory
+    Argon2Factory$Argon2Types))
+</code></pre>
+
+<p>Now you can generate a hash or verify if a string matches a hash like below:</p>
+
+<pre><code>(defonce ^:private ^:const arg2-iterations 8)
+(defonce ^:private ^:const arg2-memory 65536)
+(defonce ^:private ^:const arg2-parallelism 1)
+
+(defn- argon2-hash
+  &quot;Hash string with Argon2id&quot;
+  [str-to-be-hashed]
+  (.hash argon2 arg2-iterations arg2-memory arg2-parallelism str-to-be-hashed))
+
+(defn- argon2-verify
+  &quot;verify argon2-hash(plaintext_str) == hashed_str&quot;
+  [hashed-str plaintext-str]
+  (.verify argon2 hashed-str plaintext-str))
+</code></pre>
+
+<p>Adjust the <code>arg2-iterations</code>, <code>arg2-memory</code> and <code>arg2-parallelism</code> as needed!</p>
+
+
+                <br>
+            </div>
+            
+            
+                <div class="navigation">
+                    
+                    <div>
+                        <img class="icon" src="https://pvik.github.io/img/back.svg" alt="back" />
+                        <a href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/">Using Buddy for Authentication with JWT</a>
+                    </div>
+                    
+                    <div style="width: 100%;"></div>
+                    
+                </div>
+            
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
         </div>
     </div>
 </div>
+
 <div class="footer column">
     <div class="container">
 
