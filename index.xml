@@ -6,10 +6,21 @@
     <description>Recent content on -pvik-</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jul 2019 18:28:33 -0400</lastBuildDate>
+    <lastBuildDate>Thu, 01 Aug 2019 18:51:33 -0400</lastBuildDate>
     
 	<atom:link href="https://pvik.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Clojure to Common Lisp - Part 1</title>
+      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-1/</link>
+      <pubDate>Thu, 01 Aug 2019 18:51:33 -0400</pubDate>
+      
+      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-1/</guid>
+      <description>Clojure is a great language and has a great community surrounding it. It is opinionated, and if you want to get down to business and write code that solves problems, it mostly just gets out of your way.
+It also lets me write lisp at work instead of Java!
+Clojure has also allowed me to become less intimidated with lisp in general, and when I started working on a personal hobby project I decided to pick up another lisp language.</description>
+    </item>
     
     <item>
       <title>Using Argon for Password Hashes</title>

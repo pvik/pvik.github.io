@@ -6,12 +6,12 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
+
 
 
 
 <meta property="og:site_name" content="-pvik-" />
-<meta property="og:locale" content="nn_NO" />
+<meta property="og:locale" content="en-us" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://pvik.github.io/tags/programming/" />
 <meta property="og:title" content="Programming" />
@@ -191,7 +191,9 @@ div.header .content {
   align-items: center;
 }
 div.header .container .logo {
+  
   max-width: 100px;
+  
   margin-left: -2em;
 }
 div.header .name {
@@ -199,12 +201,13 @@ div.header .name {
   font-size: 28px;
   font-family: 'Nexa Bold', 'Helvetica Neue', 'Arial', sans-serif;
   letter-spacing: -0.005rem;
+  
   text-transform: uppercase;
+  
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
   color: #333333;
-  color: #555555;
 }
 div.header nav {
   margin-bottom: 16px;
@@ -312,7 +315,8 @@ div.main .content .title-container {
   justify-content: space-between;
 }
 div.main .content .posts {
-  margin-bottom: 4em;
+  
+  
 }
 div.main .content .page-heading {
   font-size: 20px;
@@ -379,6 +383,7 @@ div.main .content .front-matter .tags ul li:hover {
 div.main .content .front-matter .tags ul li a {
   color: #666666;
 }
+
 div.main .container.f04 {
   -webkit-justify-content: center;
   -moz-justify-content: center;
@@ -784,13 +789,15 @@ section {
 padding: 0 16px;
 margin-left: 100px;
 margin-right: 100px;
+
 max-width: 750px;
+
 }
 div.column {
 padding: 0 16px;
-margin-left: 100px;
-margin-right: 100px;
+
 max-width: 750px;
+
 }
 div.header {
 background-color: transparent;
@@ -805,8 +812,8 @@ div.header .container .logo {
 margin: 0;
 }
 div.header-home .container .logo {
-max-width: 180px;
-margin-left: 20px;
+max-width: 216px;
+margin-left: 24px;
 }
 div.header-home .name-home {
 padding-top: 30px;
@@ -891,11 +898,16 @@ padding-top: 60px;
 padding-bottom: 60px;
 }
 div.footer {
-padding-top: 30px;
+padding-top: 60px;
 padding-bottom: 60px;
 }
 div.main {
 padding-top: 0;
+}
+div.main .content {
+  
+  font-size: 16px;
+  
 }
 div.main .container .content .post-item {
 display: flex;
@@ -904,10 +916,6 @@ padding-left: 1.5em;
 }
 div.main .container .content .post-item .meta {
 display: block;
-}
-div.main.post {
-padding-top: 60px;
-padding-bottom: 60px;
 }
 div.main .content .markdown blockquote {
 padding-right: 5rem;
@@ -955,10 +963,9 @@ margin-left: -4%;
 
 
   <style type="text/css" media="screen">
-    .progressive{overflow:hidden;position:relative;background:#efefef}.progressive__img{width:100%;height:100%;position:absolute;-webkit-transform:translateZ(0);transform:translateZ(0)}.progressive--not-loaded{filter:blur(30px);-webkit-filter:blur(30px)}.progressive--is-loaded{filter:blur(20px);-webkit-filter:blur(20px);-webkit-animation:sharpen .5s both;animation:sharpen .5s both}@-webkit-keyframes sharpen{from{filter:blur(20px);-webkit-filter:blur(20px)}to{filter:blur(0);-webkit-filter:blur(0)}}@keyframes sharpen{from{filter:blur(20px);-webkit-filter:blur(20px)}to{filter:blur(0);-webkit-filter:blur(0)}}
+    .progressive{overflow:hidden;position:relative;background:#efefef}.progressive__img{width:100%;height:100%;transform:translateZ(0)}.progressive--not-loaded{filter:blur(30px)}.progressive--is-loaded{filter:blur(20px);animation:a .5s both}@keyframes a{0%{filter:blur(20px)}to{filter:blur(0)}}
+
   </style>
-
-
 
 
 
@@ -988,13 +995,15 @@ margin-left: -4%;
 <div class="header header-home column">
 
     <div class="container">
-        <a href="https://pvik.github.io/"><img class="logo" src="https://pvik.github.io/img/logo3.png" alt="logo" /></a>
+        
+        <a href="https://pvik.github.io/"><img class="logo" src="https://pvik.github.io/img/logo3.png" alt="logo"></a>
+        
         <div class="content">
             <a href="https://pvik.github.io/"><div class="name"><h1>-pvik-</h1></div></a>
             <nav>
                 <ul>
                     
-                        <li><a href="https://pvik.github.io/blog/">Blog</a></li>
+                            <li><a href="https://pvik.github.io/blog/">Blog</a></li>
                     
                     
                         
@@ -1029,13 +1038,25 @@ margin-left: -4%;
                     
                         <li class="post-item">
     <span class="meta">2018-08-30</span>
+    
     <a href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/"><span>Using Buddy for Authentication with JWT</span></a>
+    
 </li>
 
                     
                         <li class="post-item">
     <span class="meta">2019-07-30</span>
+    
     <a href="https://pvik.github.io/blog/using-argon-for-password-hashes/"><span>Using Argon for Password Hashes</span></a>
+    
+</li>
+
+                    
+                        <li class="post-item">
+    <span class="meta">2019-08-01</span>
+    
+    <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1/"><span>Clojure to Common Lisp - Part 1</span></a>
+    
 </li>
 
                     
@@ -1053,7 +1074,7 @@ margin-left: -4%;
 
         
             
-                <a href="https://pvik.github.io/license">Copyright © 2018 Praveen Vikram</a>
+                <a href="https://pvik.github.io/license">Copyright © 2018-2019 Praveen Vikram</a>
             
         
 
@@ -1063,9 +1084,21 @@ margin-left: -4%;
         
 
         
-            <a href="https://github.com/pvik" target="_blank">
+
+        
+
+        
+
+        
+
+        
+            <a href="https://github.com/pvik" rel=me target="_blank">
                 <img class="icon" src="https://pvik.github.io/img/github.svg" alt="github" />
             </a>
+        
+
+        
+
         
 
         
@@ -1106,7 +1139,6 @@ margin-left: -4%;
 
 
   <script src="https://pvik.github.io/js/progressively.min.js" defer></script>
-
 
 
 
