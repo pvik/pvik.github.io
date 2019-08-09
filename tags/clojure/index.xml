@@ -6,17 +6,28 @@
     <description>Recent content in Clojure on -pvik-</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Aug 2019 18:51:33 -0400</lastBuildDate>
+    <lastBuildDate>Mon, 05 Aug 2019 19:15:33 -0400</lastBuildDate>
     
 	<atom:link href="https://pvik.github.io/tags/clojure/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Clojure to Common Lisp - Part 1</title>
-      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-1/</link>
+      <title>Clojure to Common Lisp - Part 2 - Projects</title>
+      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/</link>
+      <pubDate>Mon, 05 Aug 2019 19:15:33 -0400</pubDate>
+      
+      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/</guid>
+      <description>This post is meant to be a quick start guide to setup a CL project and writing code.
+ If you do not have a CL Environment yet, please check out my previous post.
+ In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same</description>
+    </item>
+    
+    <item>
+      <title>Clojure to Common Lisp - Part 1 - Getting Started</title>
+      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/</link>
       <pubDate>Thu, 01 Aug 2019 18:51:33 -0400</pubDate>
       
-      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-1/</guid>
+      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/</guid>
       <description>Clojure is a great language and has a great community surrounding it. It is opinionated, and if you want to get down to business and write code that solves problems, it mostly just gets out of your way.
 It also lets me write lisp at work instead of Java!
 Clojure has also allowed me to become less intimidated with lisp in general, and when I started working on a personal hobby project I decided to pick up another lisp language.</description>

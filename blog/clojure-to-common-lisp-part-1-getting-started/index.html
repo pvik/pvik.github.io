@@ -13,9 +13,9 @@
 <meta property="og:site_name" content="-pvik-" />
 <meta property="og:locale" content="en-us" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://pvik.github.io/blog/using-argon-for-password-hashes/" />
-<meta property="og:title" content="Using Argon for Password Hashes" />
-<meta property="twitter:title" content="Using Argon for Password Hashes">
+<meta property="og:url" content="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/" />
+<meta property="og:title" content="Clojure to Common Lisp - Part 1 - Getting Started" />
+<meta property="twitter:title" content="Clojure to Common Lisp - Part 1 - Getting Started">
 
     <meta property="twitter:card" content="summary">
 
@@ -25,10 +25,10 @@
 <title>
 
 
-     -pvik- - Using Argon for Password Hashes 
+     -pvik- - Clojure to Common Lisp - Part 1 - Getting Started 
 
 </title>
-<link rel="canonical" href="https://pvik.github.io/blog/using-argon-for-password-hashes/">
+<link rel="canonical" href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/">
 
 
 <style media="screen">
@@ -1039,19 +1039,19 @@ margin-left: -4%;
                     <div class="page-heading">
 
     
-    Using Argon for Password Hashes
+    Clojure to Common Lisp - Part 1 - Getting Started
     
 
 </div>
 
                 </div>
                 <div class="meta">
-                    <div class="date" title="Tue Jul 30 2019 18:28:33 EST">2019-07-30</div>
+                    <div class="date" title="Thu Aug 1 2019 18:51:33 EST">2019-08-01</div>
                     
                         
                     
                     
-                    <div class="reading-time middot">1 minute read</div>
+                    <div class="reading-time middot">5 minute read</div>
                     
                     
                       <div class="tags">
@@ -1060,7 +1060,7 @@ margin-left: -4%;
                           
                             <li class="middot"><a href="https://pvik.github.io/tags/clojure">Clojure</a> </li>
                           
-                            <li class="middot"><a href="https://pvik.github.io/tags/webapp">WebApp</a> </li>
+                            <li class="middot"><a href="https://pvik.github.io/tags/commonlisp">CommonLisp</a> </li>
                           
                             <li class="middot"><a href="https://pvik.github.io/tags/programming">Programming</a> </li>
                           
@@ -1077,37 +1077,140 @@ margin-left: -4%;
             <div class="markdown">
                 
     
-    <p>Include the <code>argon2-jvm</code> dependency in your <code>build.boot</code> or <code>project.clj</code> file.</p>
+    
 
-<pre><code>[de.mkammerer/argon2-jvm &quot;2.5&quot;]
+<p>Clojure is a great language and has a great community surrounding it. It is opinionated, and if you want to get down to business and write code that solves problems, it mostly just gets out of your way.</p>
+
+<p>It also lets me write lisp at work instead of Java!</p>
+
+<p>Clojure has also allowed me to become less intimidated with lisp in general, and when I started working on a personal hobby project I decided to pick up another lisp language. There are however quite a few lisp languages out there. I seriously considered guile scheme, chicken scheme and common lisp and decided to go with common lisp at the end.</p>
+
+<p>This blog post and some more subsequent posts will deal with learning common lisp when you are already comfortable with clojure (or any other lisp actually).</p>
+
+<blockquote>
+<p>I will try to refrain from making arguments that one language is better than another. Both the languages are tools, so use the tool that you prefer and which allows you to solve the problem best.</p>
+</blockquote>
+
+<h3 id="what-is-common-lisp">What is Common Lisp?</h3>
+
+<p>Common lisp is a set of specification and no language called common lisp itself exists. There are several implementation of the common lisp specification like Steel Bank Common Lisp (<code>sbcl</code>), Clozure CL (<code>ccl</code>), etc. There are also paid implementations like Allegro Common Lisp, LispWorks, etc. This is different from Clojure, which is both a specification and the language.</p>
+
+<blockquote>
+<p><a href="https://www.cliki.net/Common+Lisp+implementation">This</a> page provides a list &amp; comparison of implementations currently still relevant.</p>
+</blockquote>
+
+<p>This means the first decision you will have to make when you decide to use Common Lisp, is which implementation should you use?
+Each implementation has it&rsquo;s own set of features. Features like if they support threads, compile to native binary, etc.</p>
+
+<p>General advice with lispers is for beginners to pick SBCL. It is still being actively developed/maintained, provides threads, comes with a native compiler, can generate executable. This checks all the boxes for me.</p>
+
+<blockquote>
+<p>I assume all examples from here on are run in SBCL</p>
+</blockquote>
+
+<h3 id="getting-started">Getting Started</h3>
+
+<p>First step is to install SBCL.</p>
+
+<p>The <a href="http://www.sbcl.org/getting.html">Getting Started</a> page on <a href="http://www.sbcl.org">SBCL</a> home page should help you with this. On Arch linux, Fedora or Ubuntu you could install the <code>sbcl</code> package. On OS X, <code>sbcl</code> is also available on <code>brew</code> or macports. For Windows there is <a href="http://www.iqool.de/lispstick.html">Lipstick</a>. <em>edit: There is also <a href="https://portacle.github.io/">portacle</a> which runs on Windows and seems to be better maintained</em></p>
+
+<p>Second step would be to setup an IDE environment.</p>
+
+<p>I use Emacs for clojure development, and I can&rsquo;t think of any reason to switch away from Emacs for lisp development. Packages like <code>smartparens</code>, <code>rainbow-delimiters</code>, etc makes lisp development a pleasure in emacs.</p>
+
+<p>Along with Emacs, there is also <a href="https://www.common-lisp.net/project/slime/">SLIME</a>, which stands for &ldquo;<strong>S</strong>uperior <strong>L</strong>isp <strong>I</strong>nteraction <strong>M</strong>ode for <strong>E</strong>macs&rdquo;, from what I&rsquo;ve read about it so far is that it is what CIDER for Clojure strives to be!</p>
+
+<p>We will also be installing <a href="https://www.quicklisp.org/">QuickLisp</a>, which is a package manager for Common Lisp, this will allow you to pull other CL (Common Lisp) libraries from the internet and use it in your application. Quicklisp builds on another tool called <a href="https://common-lisp.net/project/asdf/"><code>asdf</code></a>, which stands for <strong>A</strong>nother <strong>S</strong>ystem <strong>D</strong>efinition <strong>F</strong>acility. <code>asdf</code> with <code>quicklisp</code> can provide features similar to <code>lein</code> or <code>boot</code>.</p>
+
+<p><a href="https://lisp-lang.org/learn/getting-started/">This</a> page will guide you through setting up SLIME and QuickLisp. (<code>asdf</code> comes packaged with <code>sbcl</code>)</p>
+
+<p>Once you have <code>sbcl</code>, QuickLisp you should be ready to start writing some code!</p>
+
+<h3 id="repl">REPL</h3>
+
+<p>To start the REPL, you can run <code>sbcl</code>, you should see something like this:</p>
+
+<pre><code>$ sbcl
+This is SBCL 1.5.3, an implementation of ANSI Common Lisp.
+More information about SBCL is available at &lt;http://www.sbcl.org/&gt;.
+
+SBCL is free software, provided as is, with absolutely no warranty.
+It is mostly in the public domain; some portions are provided under
+BSD-style licenses.  See the CREDITS and COPYING files in the
+distribution for more information.
+* 
 </code></pre>
 
-<p>In the module you need to use argon hashes, import the necessary classes in you namespace (<code>ns</code>) declaration:</p>
+<p>The <code>*</code> is the REPL prompt!</p>
 
-<pre><code>(:import
-  (de.mkammerer.argon2 
-    Argon2Factory
-    Argon2Factory$Argon2Types))
+<blockquote>
+<p>You may want to use rlwrap to make navigating between commands, and search for previous repl evaluations easier. To do this, start sbcl like this:
+<code>rlwrap sbcl</code></p>
+</blockquote>
+
+<p>Go ahead and try some simple commands:</p>
+
+<pre><code>;; add some numbers
+(+ 1 4)
+
+;; print some stuff
+(print &quot;abcd&quot;)
+
+;; concatenate some strings
+(concatenate 'string &quot;string&quot; &quot; together &quot; &quot;some&quot; &quot; strings.&quot;)
+
+;; declare some global variable
+(defparameter *x* 10)  ;; clojure def
+(defvar *y* 2)         ;; clojure defonce
+
+;; format a string
+(format t &quot;x is ~d and y is ~d&quot; *x* *y*)
 </code></pre>
 
-<p>Now you can generate a hash or verify if a string matches a hash like below:</p>
+<h3 id="first-common-lisp-file">First Common Lisp file</h3>
 
-<pre><code>(defonce ^:private ^:const arg2-iterations 8)
-(defonce ^:private ^:const arg2-memory 65536)
-(defonce ^:private ^:const arg2-parallelism 1)
+<p>In clojure, you are required to have your source files in a specific directory structure (depending on the namespace). However in Common Lisp, there are no such restrictions, you can type in some lisp code in a file and load it into your repl, and access its functions, variables, etc.</p>
 
-(defn- argon2-hash
-  &quot;Hash string with Argon2id&quot;
-  [str-to-be-hashed]
-  (.hash argon2 arg2-iterations arg2-memory arg2-parallelism str-to-be-hashed))
+<p>So let us create a file called <code>first.lisp</code> as follows:</p>
 
-(defn- argon2-verify
-  &quot;verify argon2-hash(plaintext_str) == hashed_str&quot;
-  [hashed-str plaintext-str]
-  (.verify argon2 hashed-str plaintext-str))
+<pre><code>;; first.lisp
+
+(defun first-fn (x)
+  x)
+
+(defun is-factor-p (m n)
+  (zerop (rem m n)))
 </code></pre>
 
-<p>Adjust the <code>arg2-iterations</code>, <code>arg2-memory</code> and <code>arg2-parallelism</code> as needed!</p>
+<p>now open up your repl and try out the functions from your file as follows (make sure you navigate to where you have <code>first.lisp</code> saved first):</p>
+
+<pre><code>* (load &quot;first&quot;)
+T
+* (first-fn 1)
+1
+* (first-fn &quot;abc&quot;)
+&quot;abc&quot;
+* (is-factor-p 4 2)
+T
+* (is-factor-p 4 3)
+NIL
+</code></pre>
+
+<h3 id="getting-started-with-slime">Getting Started with SLIME</h3>
+
+<p>You can open <code>first.lisp</code> in emacs and then <code>M-x slime</code>. This will start up the SLIME REPL.</p>
+
+<p>In your <code>first.lisp</code> buffer, you can <code>C-c C-k</code> to compile the entire buffer and load it into the SLIME REPL.</p>
+
+<p>You can also compile specific forms by, moving you cursor to the form you want to compile and <code>C-c C-c</code>.</p>
+
+<p>This is just the basics, I will cover more SLIME specific features in a future post.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>This post is intended to bring you up to speed with a Common Lisp development environment and allow you to write some CL code!</p>
+
+<p>In the next post I will be covering how to set up a Common Lisp project, defining a directory structure, compiling and other basics in setting up a CL Project.</p>
 
 
             </div>
@@ -1118,13 +1221,13 @@ margin-left: -4%;
                 
                 <div>
                     <img class="icon" src="https://pvik.github.io/img/back.svg" alt="back" />
-                    <a href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/">Using Buddy for Authentication with JWT</a>
+                    <a href="https://pvik.github.io/blog/using-argon-for-password-hashes/">Using Argon for Password Hashes</a>
                 </div>
                 
                 <div style="width: 100%;"></div>
                 
                 <div>
-                    <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/">Clojure to Common Lisp - Part 1 - Getting Started</a>
+                    <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/">Clojure to Common Lisp - Part 2 - Projects</a>
                     <img class="icon" src="https://pvik.github.io/img/next.svg" alt="next" />
                 </div>
                 
