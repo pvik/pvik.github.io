@@ -1051,7 +1051,7 @@ margin-left: -4%;
                         
                     
                     
-                    <div class="reading-time middot">3 minute read</div>
+                    <div class="reading-time middot">4 minute read</div>
                     
                     
                       <div class="tags">
@@ -1201,12 +1201,12 @@ $ tree
 <p>Fire up a REPL and <code>require</code> our project, as long as our project is in a location <code>asdf</code> can find, you should see something like this:</p>
 
 <pre><code class="language-lisp">* (require &quot;first-app&quot;)
-; compiling file &quot;/home/elric/common-lisp/first-app/src/main.lisp&quot; (written 09 AUG 2019 11:44:00 AM):
+; compiling file &quot;/home/pvik/common-lisp/first-app/src/main.lisp&quot; (written 09 AUG 2019 11:44:00 AM):
 ; compiling (DEFPACKAGE FIRST-APP ...)
 ; compiling (IN-PACKAGE :FIRST-APP)
 ; compiling (DEFUN HELLO-WORLD ...)
 
-; wrote /home/elric/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/elric/common-lisp/first-app/src/main-tmpAAURSO1.fasl
+; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpAAURSO1.fasl
 ; compilation finished in 0:00:00.001
 NIL
 </code></pre>
@@ -1217,6 +1217,41 @@ NIL
 
 &quot;Hello World&quot; 
 </code></pre>
+
+<h3 id="generating-a-binary">Generating a Binary</h3>
+
+<p>You can use <code>asdf</code> to generate a binary as well. Add the following lines to you <code>.asd</code> file:</p>
+
+<pre><code class="language-lisp">:build-operation &quot;program-op&quot; ;; leave as is
+:build-pathname &quot;first-app.bin&quot;
+:entry-point &quot;first-app:hello-world&quot;	
+</code></pre>
+
+<p>under the system definition (<code>defsystem</code>) for <code>&quot;first-app&quot;</code>.</p>
+
+<p>Now you can generate the binary from the REPL like so:</p>
+
+<pre><code class="language-lisp">* (asdf:make :first-app)
+; compiling file &quot;/home/pvik/common-lisp/first-app/src/main.lisp&quot; (written 09 AUG 2019 11:44:00 AM):
+; compiling (DEFPACKAGE FIRST-APP ...)
+; compiling (IN-PACKAGE :FIRST-APP)
+; compiling (DEFUN HELLO-WORLD ...)
+
+; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpGHU3ALSV.fasl
+; compilation finished in 0:00:00.001
+[undoing binding stack and other enclosing state... done]
+[performing final GC... done]
+[defragmenting immobile space... (fin,inst,fdefn,code,sym)=1024+932+18740+19628+24991... done]
+[saving current Lisp image into /home/pvik/common-lisp/first-app/first-app.bin:
+writing 0 bytes from the read-only space at 0x50000000
+writing 432 bytes from the static space at 0x50100000
+writing 27492352 bytes from the dynamic space at 0x1000000000
+writing 1347584 bytes from the immobile space at 0x50300000
+writing 12600064 bytes from the immobile space at 0x52100000
+done]
+</code></pre>
+
+<p>The <code>fist-app.bin</code> should be in your project root.</p>
 
 <p>You should be setup to start coding away in your new project!</p>
 
