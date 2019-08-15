@@ -17,9 +17,9 @@
       <pubDate>Fri, 09 Aug 2019 20:18:33 -0400</pubDate>
       
       <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/</guid>
-      <description>This post deals with writing a simple CRUD application.
+      <description>This post deals with writing a simple CRUD application in Common Lisp.
  The code for this demo project is available on github
- Introduction We will write a simple TODO list application which will store our TODO items in a postgres database. This application will have a simple terminal based interface.
+ Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
 Running The Application Clone the git repository into a location where asdf can find it.
 $ cd ~/common-lisp $ git clone https://github.</description>
     </item>

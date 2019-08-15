@@ -1081,7 +1081,7 @@ margin-left: -4%;
     
     
 
-<p>This post deals with writing a simple CRUD application.</p>
+<p>This post deals with writing a simple CRUD application in Common Lisp.</p>
 
 <blockquote>
 <p>The code for this demo project is available on <a href="https://github.com/pvik/cl-demo-crud-app">github</a></p>
@@ -1089,7 +1089,7 @@ margin-left: -4%;
 
 <h3 id="introduction">Introduction</h3>
 
-<p>We will write a simple TODO list application which will store our TODO items in a postgres database. This application will have a simple terminal based interface.</p>
+<p>We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.</p>
 
 <h3 id="running-the-application">Running The Application</h3>
 
@@ -1105,7 +1105,7 @@ $ cd cl-demo-crud-app
 <pre><code class="language-bash">$ docker-compose -f docker/docker-compose.yaml up
 </code></pre>
 
-<p>Now create the database tables from <code>migrations/01-setup.sql</code>:</p>
+<p>Create the database tables from <code>migrations/01-setup.sql</code>:</p>
 
 <pre><code class="language-bash">$ psql -h localhost -U postgres -f migrations/01-setup.sql
 Password for user postgres:
@@ -1125,7 +1125,7 @@ Time: 7.906 ms
 
 <p>(Note: default password for our DB is <code>docker</code>)</p>
 
-<p>Now open up the <code>sbcl</code> REPL and:</p>
+<p>Open up the <code>sbcl</code> REPL and:</p>
 
 <pre><code class="language-lisp">* (require 'cl-demo-crud-app)
 WARNING: System definition file #P&quot;/home/elric/.quicklisp/dists/quicklisp/software/cl-fad-20180430-git/cl-fad.asd&quot; contains definition for system &quot;cl-fad-test&quot;. Please only define &quot;cl-fad&quot; and secondary systems with a name starting with &quot;cl-fad/&quot; (e.g. &quot;cl-fad/test&quot;) in that file.
@@ -1164,14 +1164,14 @@ WARNING: System definition file #P&quot;/home/elric/.quicklisp/dists/quicklisp/s
 (&quot;SB-ROTATE-BYTE&quot;)
 </code></pre>
 
-<p>And then to start the application:</p>
+<p>Finally start the application in the REPL:</p>
 
 <pre><code class="language-lisp">(cl-demo-crud-app:main)
 </code></pre>
 
 <h3 id="the-user-interface">The User Interface</h3>
 
-<p>The command line interface has 5 commands</p>
+<p>The terminal interface has 5 commands</p>
 
 <ul>
 <li><code>show</code>
