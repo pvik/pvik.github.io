@@ -1,108 +1,65 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>-pvik-</title>
     <link>https://pvik.github.io/</link>
     <description>Recent content on -pvik-</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2019 20:18:33 -0400</lastBuildDate>
+    <generator>Hugo - gohugo.io</generator>
+    <language>en</language>
+    <contact>praveen@kiosa.org</contact>
+    <copyright></copyright>
     
-	<atom:link href="https://pvik.github.io/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://pvik.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Clojure to Common Lisp - Part 3 - Sample CRUD App</title>
-      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/</link>
+      <title>Blogs</title>
+      <link>https://pvik.github.io/blog/</link>
       <pubDate>Fri, 09 Aug 2019 20:18:33 -0400</pubDate>
+      <author>Praveen Vikram</author>
+      <guid>https://pvik.github.io/blog/</guid>
+      <description></description>
       
-      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/</guid>
-      <description>This post deals with writing a simple CRUD application in Common Lisp.
- The code for this demo project is available on github
- Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
-Running The Application Clone the git repository into a location where asdf can find it.
-$ cd ~/common-lisp $ git clone https://github.</description>
-    </item>
-    
-    <item>
-      <title>Clojure to Common Lisp - Part 2 - Projects</title>
-      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/</link>
-      <pubDate>Mon, 05 Aug 2019 19:15:33 -0400</pubDate>
+      <content></content>
       
-      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/</guid>
-      <description>This post is meant to be a quick start guide to setup a CL project and writing code.
- If you do not have a CL Environment yet, please check out my previous post.
- In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same</description>
-    </item>
-    
-    <item>
-      <title>Clojure to Common Lisp - Part 1 - Getting Started</title>
-      <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/</link>
-      <pubDate>Thu, 01 Aug 2019 18:51:33 -0400</pubDate>
-      
-      <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/</guid>
-      <description>Clojure is a great language and has a great community surrounding it. It is opinionated, and if you want to get down to business and write code that solves problems, it mostly just gets out of your way.
-It also lets me write lisp at work instead of Java!
-Clojure has also allowed me to become less intimidated with lisp in general, and when I started working on a personal hobby project I decided to pick up another lisp language.</description>
-    </item>
-    
-    <item>
-      <title>Using Argon for Password Hashes</title>
-      <link>https://pvik.github.io/blog/using-argon-for-password-hashes/</link>
-      <pubDate>Tue, 30 Jul 2019 18:28:33 -0400</pubDate>
-      
-      <guid>https://pvik.github.io/blog/using-argon-for-password-hashes/</guid>
-      <description>Include the argon2-jvm dependency in your build.boot or project.clj file.
-[de.mkammerer/argon2-jvm &amp;quot;2.5&amp;quot;]  In the module you need to use argon hashes, import the necessary classes in you namespace (ns) declaration:
-(:import (de.mkammerer.argon2 Argon2Factory Argon2Factory$Argon2Types))  Now you can generate a hash or verify if a string matches a hash like below:
-(defonce ^:private ^:const arg2-iterations 8) (defonce ^:private ^:const arg2-memory 65536) (defonce ^:private ^:const arg2-parallelism 1) (defn- argon2-hash &amp;quot;Hash string with Argon2id&amp;quot; [str-to-be-hashed] (.</description>
-    </item>
-    
-    <item>
-      <title>Using Buddy for Authentication with JWT</title>
-      <link>https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/</link>
-      <pubDate>Thu, 30 Aug 2018 18:28:33 -0400</pubDate>
-      
-      <guid>https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/</guid>
-      <description>buddy is a set of clojure modules and libraries to incorporate various security feature in your ring application. It is also fairly non-opinionated allowing you to decide how to handle various scenarios. Check out their github page to know more about the library. Their documentation can be found here. They also have basic examples for using various authentication schemes here.
-In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT) and also setup access rules to make sure certain routes can only be accessed with specific authorization levels.</description>
-    </item>
-    
-    <item>
-      <title>Kiosa</title>
-      <link>https://pvik.github.io/projects/kiosa/</link>
-      <pubDate>Fri, 02 Feb 2018 10:12:27 -0500</pubDate>
-      
-      <guid>https://pvik.github.io/projects/kiosa/</guid>
-      <description>An e-commerce site aimed at helping makers Rapid prototype their designs and models. Helping builders connect with designers, artists and other makers.</description>
     </item>
     
     <item>
       <title>Projects</title>
-      <link>https://pvik.github.io/projects/projects/</link>
-      <pubDate>Fri, 02 Feb 2018 10:11:48 -0500</pubDate>
+      <link>https://pvik.github.io/projects/</link>
+      <pubDate>Fri, 02 Feb 2018 10:12:27 -0500</pubDate>
+      <author>Praveen Vikram</author>
+      <guid>https://pvik.github.io/projects/</guid>
+      <description></description>
       
-      <guid>https://pvik.github.io/projects/projects/</guid>
-      <description>List of projects I am currently working on.</description>
+      <content></content>
+      
     </item>
     
     <item>
       <title>Home</title>
       <link>https://pvik.github.io/home/</link>
       <pubDate>Fri, 02 Feb 2018 10:05:20 -0500</pubDate>
-      
+      <author>Praveen Vikram</author>
       <guid>https://pvik.github.io/home/</guid>
-      <description>Time is an illusion. Lunchtime doubly so. - Douglas Adams  </description>
+      <description></description>
+      
+      <content>&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-md&#34; data-lang=&#34;md&#34;&gt;    Time is an illusion. Lunchtime doubly so.
+                          - Douglas Adams&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+      
     </item>
     
     <item>
       <title>About</title>
       <link>https://pvik.github.io/about/</link>
       <pubDate>Fri, 02 Feb 2018 10:05:03 -0500</pubDate>
-      
+      <author>Praveen Vikram</author>
       <guid>https://pvik.github.io/about/</guid>
-      <description>This is my personal blog and a place to link all the projects I am working on.
-You can find blog posts about my endeavors in Rapid Prototyping with 3D printing and CNC machines, Electronics and Software Development.</description>
+      <description></description>
+      
+      <content>&lt;p&gt;This is my personal blog and a place to link all the &lt;a href=&#34;https://pvik.github.io/projects&#34;&gt;projects&lt;/a&gt; I am working on.&lt;/p&gt;
+&lt;p&gt;You can find blog posts about my endeavors in &lt;a href=&#34;https://pvik.github.io/tags/rapid-prototyping&#34;&gt;Rapid Prototyping&lt;/a&gt; with &lt;a href=&#34;https://pvik.github.io/tags/3d-printing&#34;&gt;3D printing&lt;/a&gt; and &lt;a href=&#34;https://pvik.github.io/tags/cnc&#34;&gt;CNC machines&lt;/a&gt;, &lt;a href=&#34;https://pvik.github.io/tags/electronics&#34;&gt;Electronics&lt;/a&gt; and &lt;a href=&#34;https://pvik.github.io/tags/programming&#34;&gt;Software Development&lt;/a&gt;.&lt;/p&gt;
+</content>
+      
     </item>
     
   </channel>

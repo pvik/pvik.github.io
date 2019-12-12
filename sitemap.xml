@@ -1,35 +1,25 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>https://pvik.github.io/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pvik.github.io/blog/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://pvik.github.io/tags/crud/</loc>
-    <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pvik.github.io/categories/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pvik.github.io/tags/clojure/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -40,25 +30,26 @@
   <url>
     <loc>https://pvik.github.io/tags/commonlisp/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pvik.github.io/tags/crud/</loc>
+    <lastmod>2019-08-09T20:18:33-04:00</lastmod>
   </url>
   
   <url>
     <loc>https://pvik.github.io/categories/programming/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pvik.github.io/tags/programming/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pvik.github.io/tags/</loc>
     <lastmod>2019-08-09T20:18:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -79,7 +70,6 @@
   <url>
     <loc>https://pvik.github.io/tags/webapp/</loc>
     <lastmod>2019-07-30T18:28:33-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -95,7 +85,6 @@
   <url>
     <loc>https://pvik.github.io/projects/</loc>
     <lastmod>2018-02-02T10:12:27-05:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

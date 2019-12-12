@@ -1,1128 +1,137 @@
 <!DOCTYPE html>
-<html lang="en-us">
-
+<html xmlns="http://www.w3.org/1999/xhtml"  lang="en-us">
 <head>
-<meta charset="utf-8">
-<meta name="HandheldFriendly" content="True">
-<meta name="MobileOptimized" content="320">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Clojure to Common Lisp - Part 2 - Projects | -pvik-</title>
+
+<meta property='og:title' content='Clojure to Common Lisp - Part 2 - Projects • -pvik-'>
+<meta property='og:description' content='This post is meant to be a quick start guide to setup a CL project and writing code.
+ If you do not have a CL Environment yet, please check out my previous post.
+ In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same'>
+<meta property='og:url' content='https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/'>
+<meta property='og:site_name' content='-pvik-'>
+<meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/6f32ea697d67c3c98da6f78c516a6338?s=256'><meta property='article:section' content='Blog'><meta property='article:tag' content='Clojure'><meta property='article:tag' content='CommonLisp'><meta property='article:tag' content='Programming'><meta property='article:published_time' content='2019-08-05T19:15:33-04:00'/><meta property='article:modified_time' content='2019-08-05T19:15:33-04:00'/><meta name='twitter:card' content='summary'><meta name='twitter:site' content='@'><meta name='twitter:creator' content='@'>
 
 
+<link href="https://pvik.github.io/index.xml" rel="alternate" type="application/rss+xml" title="-pvik-" />
 
-
-<meta property="og:site_name" content="-pvik-" />
-<meta property="og:locale" content="en-us" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/" />
-<meta property="og:title" content="Clojure to Common Lisp - Part 2 - Projects" />
-<meta property="twitter:title" content="Clojure to Common Lisp - Part 2 - Projects">
-
-    <meta property="twitter:card" content="summary">
-
-<meta property="og:description" content="">
-<meta property="twitter:description" content="">
-
-<title>
-
-
-     -pvik- - Clojure to Common Lisp - Part 2 - Projects 
-
-</title>
+<link rel="stylesheet" href="https://pvik.github.io/css/style.css"/><link rel='stylesheet' href='https://pvik.github.io/css/custom.css'><link rel="apple-touch-icon" sizes="180x180" href="https://pvik.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://pvik.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://pvik.github.io/favicon-16x16.png">
+<link rel="manifest" href="https://pvik.github.io/site.webmanifest">
+<link rel="mask-icon" href="https://pvik.github.io/safari-pinned-tab.svg" color="#5bbad5">
 <link rel="canonical" href="https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/">
-
-
-<style media="screen">
-  @font-face {
-  font-family: 'Nexa Bold';
-  src: url('https://pvik.github.io/fonts/Nexa Bold.otf');
-}
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section, div.column {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol, ul {
-  list-style: none;
-}
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-a,
-a:visited,
-a:focus,
-a:active {
-  text-decoration: none;
-}
-html {
-  height: 100%;
-  font-size: 16px;
-}
-body {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  -moz-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: flex-start;
-  -moz-justify-content: flex-start;
-  -ms-justify-content: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  min-height: 100%;
-  font-weight: 400;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  color: #111111;
-  line-height: 1.6;
-  text-rendering: optimizeLegibility !important;
-}
-.icon {
-  text-rendering: geometricPrecision !important;
-}
-section {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  width: 100%;
-}
-div.column {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  width: 100%;
-}
-.container {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  width: 100%;
-}
-div.header .container {
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-}
-div.header .content {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  -moz-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-}
-div.header .container .logo {
-  
-  max-width: 100px;
-  
-  margin-left: -2em;
-}
-div.header .name {
-  padding-top: 20px;
-  font-size: 28px;
-  font-family: 'Nexa Bold', 'Helvetica Neue', 'Arial', sans-serif;
-  letter-spacing: -0.005rem;
-  
-  text-transform: uppercase;
-  
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
-  color: #333333;
-}
-div.header nav {
-  margin-bottom: 16px;
-}
-div.header nav ul {
-  list-style: none;
-  text-align: center;
-  display: -webkit-inline-flex;
-  display: -moz-inline-flex;
-  display: -ms-inline-flexbox;
-  display: -ms-inline-flex;
-  display: inline-flex;
-}
-div.header nav ul li {
-  margin-left: 6px;
-  margin-right: 6px;
-}
-div.header nav ul li:first-child {
-  margin-left: 0;
-}
-div.header nav ul li:last-child {
-  margin-right: 0;
-}
-div.header nav ul a {
-  color: #555555;
-  font-weight: 400;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  -webkit-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -moz-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -ms-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -o-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-}
-div.header nav ul a:hover {
-  color: #111111;
-}
-div.footer .container {
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-  flex-direction: column-reverse;
-  width: 100%;
-  text-align: center;
-}
-div.footer .container a {
-  font-size: 14px;
-  margin-left: 6px;
-  margin-right: 6px;
-  opacity: 0.6;
-  -webkit-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -moz-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -ms-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -o-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-}
-div.footer .container a:first-child {
-  margin-left: 0;
-}
-div.footer .container a:last-child {
-  margin-right: 0;
-}
-div.footer .container a:hover {
-  opacity: 0.8;
-}
-div.footer .container a .icon {
-  width: 16px;
-  height: 16px;
-}
-div.footer .container .copyright {
-  flex-grow: 0.5;
-  text-align: start;
-}
-div.footer .container .icons {
-  flex-grow: 0.5;
-  text-align: end;
-}
-div.main .container {
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  -webkit-justify-content: flex-start;
-  -moz-justify-content: flex-start;
-  -ms-justify-content: flex-start;
-  justify-content: flex-start;
-}
-div.main .content {
-  color: #111111;
-  font-size: 16px;
-}
-div.main .content .title-container {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-  -moz-justify-content: space-between;
-  -ms-justify-content: space-between;
-  justify-content: space-between;
-}
-div.main .content .posts {
-  
-  
-}
-div.main .content .page-heading {
-  font-size: 20px;
-  font-weight: 700;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  letter-spacing: -0.005rem;
-  text-transform: uppercase;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
-  color: #333333;
-  margin-bottom: 16px;
-}
-div.main .content .front-matter .page-heading {
-  margin-bottom: 0;
-}
-div.main .content .front-matter .meta {
-  font-size: 14px;
-  color: #666666;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  margin-bottom: 32px;
-}
-div.main .content .front-matter .date,
-div.main .content .front-matter .author,
-div.main .content .front-matter .tags,
-div.main .content .front-matter .word-count,
-div.main .content .front-matter .middot:before {
-  display: none;
-}
-div.main .content .front-matter .middot:before {
-  font-size: 6px;
-  margin: 0 6px;
-  vertical-align: middle;
-  content: "•";
-}
-div.main .content .front-matter .tags ul {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  -moz-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-}
-div.main .content .front-matter .tags ul li {
-  -webkit-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -moz-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -ms-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -o-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-}
-div.main .content .front-matter .tags ul li:hover {
-  opacity: 0.7;
-}
-div.main .content .front-matter .tags ul li a {
-  color: #666666;
-}
-
-div.main .container.f04 {
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  justify-content: center;
-}
-div.main .container.f04 .content {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  -moz-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-}
-div.main .container.f04 .content .num {
-  margin: 30px 0px 30px 0;
-  font-weight: 400;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  font-size: 50px;
-}
-div.main .container.f04 .content .detail {
-  margin-bottom: 40px;
-}
-div.main .container .content .groupby {
-  margin-top: 1em;
-  padding-left: 0.5em;
-}
-div.main .container .content .post-item {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  display: list-item;
-  list-style: disc inside;
-}
-div.main .container .content .post-item .meta {
-  font-size: 14px;
-  color: #666666;
-  display: none;
-  min-width: 100px;
-}
-div.main .container .content .see-more {
-  font-style: italic;
-  float: right;
-  font-size: 0.9em;
-  margin-top: 2em;
-  color: #313537;
-}
-div.main .container .content .see-more:hover {
-  color: #666;
-}
-section {
-  padding: 0 16px;
-}
-div.column {
-  padding: 0 16px;
-}
-div.header {
-  padding-top: 10px;
-}
-div.header-home {
-  padding-top: 36px;
-}
-div.main {
-  padding-top: 32px;
-}
-div.main .container .content .post-item .meta {
-    display: block;
-}
-div.main .container .content .post-item {
-    display: flex;
-    list-style: none;
-}
-a {
-  color: #428bca;
-  -webkit-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -moz-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -ms-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-  -o-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
-}
-a:hover {
-  color: #2a6496;
-}
-img {
-  max-width: 100%;
-}
-div.main .content {
-    width: 100%;
-}
-div.main .content .markdown {
-  font-size: 1.1em;
-  line-height: 1.75em;
-  color: #313537;
-  font-family: serif;
-  font-weight: 300;
-}
-div.main .content .markdown h1,
-div.main .content .markdown h2,
-div.main .content .markdown h3,
-div.main .content .markdown h4,
-div.main .content .markdown h5,
-div.main .content .markdown h6 {
-  font-size: 22px;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  letter-spacing: -0.005rem;
-  font-weight: 700;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
-  color: #333333;
-  text-transform: none;
-  margin-top: 1.75rem;
-}
-div.main .content .markdown h1 {
-  font-size: 1.75rem;
-  margin-bottom: 2rem;
-}
-div.main .content .markdown h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-div.main .content .markdown h3 {
-  font-size: 1em;
-  margin-bottom: 1rem;
-}
-div.main .content .markdown h4,
-div.main .content .markdown h5,
-div.main .content .markdown h6 {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  letter-spacing: none;
-}
-div.main .content .markdown code,
-div.main .content .markdown pre {
-  font-family: 'Menlo', monospace;
-  font-size: 0.98rem;
-  background-color: #f7f7f7;
-}
-div.main .content .markdown code {
-  /* enclosed by single backtick (`) */
-  padding: .15em .5em;
-  border-radius: 2px;
-}
-div.main .content .markdown pre {
-  /* Hugo specific: consider using the 'highlight' shortcode */
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  line-height: 1.5em;
-  white-space: pre;
-  word-break: break-all;
-  word-wrap: break-word;
-}
-div.main .content .markdown pre code {
-  /* enclosed by 4 backticks (````) */
-  padding: 0;
-  font-size: 0.9rem;
-}
-div.main .content .markdown a code {
-  color: #428bca !important;
-}
-div.main .content .markdown a code:hover {
-  text-decoration: underline;
-}
-div.main .content .markdown p {
-  
-  text-align: justify;
-  
-  margin-top: 0;
-  margin-bottom: 1em;
-}
-div.main .content .markdown ul,
-div.main .content .markdown ol,
-div.main .content .markdown dl {
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-}
-div.main .content .markdown dt {
-  font-weight: bold;
-}
-div.main .content .markdown dd {
-  margin-bottom: .5rem;
-}
-div.main .content .markdown ul {
-  list-style-type: disc;
-  list-style-position: outside;
-  margin-bottom: 1.25rem;
-}
-div.main .content .markdown ol {
-  list-style-type: decimal;
-  margin-bottom: 1.25rem;
-}
-div.main .content .markdown li {
-  margin-left: 2em;
-}
-div.main .content .markdown em {
-  font-style: italic;
-}
-div.main .content .markdown strong {
-  font-weight: 700;
-}
-div.main .content .markdown hr {
-  position: relative;
-  margin: 1.75rem 0;
-  border: 0;
-  border-top: 1px solid #808080;
-  border-top: 1px solid #999999;
-}
-div.main .content .markdown abbr {
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #666666;
-  text-transform: uppercase;
-}
-div.main .content .markdown abbr[title] {
-  cursor: help;
-  border-bottom: 1px dotted #808080;
-}
-div.main .content .markdown blockquote {
-  padding: .5rem 1rem;
-  margin: .8rem 0;
-  color: #7a7a7a;
-  border-left: .25rem solid #e5e5e5;
-}
-div.main .content .markdown blockquote p:last-child {
-  margin-bottom: 0;
-}
-div.main .content .markdown figure {
-  width: 100%;
-  background: #fff;
-  margin-bottom: 1em;
-}
-div.main .content .markdown figure img {
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  display: block;
-  position: static;
-  margin: auto;
-}
-div.main .content .markdown table {
-  margin-bottom: 1rem;
-  width: 100%;
-  border: 1px solid #e5e5e5;
-  border-collapse: collapse;
-}
-div.main .content .markdown td,
-div.main .content .markdown th {
-  padding: .25rem .5rem;
-  border: 1px solid #e5e5e5;
-}
-div.main .content .markdown tbody tr:nth-child(odd) td,
-div.main .content .markdown tbody tr:nth-child(odd) th {
-  background-color: #f7f7f7;
-}
-div.main .content .markdown .footnotes ol {
-  list-style-type: decimal;
-  margin-left: 16px;
-}
-div.main .content .markdown .footnotes li {
-  list-style-type: unset;
-}
-div.main .content .markdown .footnote-ref {
-  font-size: 0.7em;
-}
-div.main .content .navigation {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  -moz-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  padding: 2em;
-}
-div.main .content .navigation div {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  -moz-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  margin-top: 1em;
-}
-div.main .content .navigation .icon {
-  width: 16px;
-  height: 16px;
-}
-div.main .content .navigation a {
-  width: 250px;
-  margin: 0 1em;
-  text-align: center;
-  font-style: italic;
-  color: #313537;
-}
-div.main .content .share, div.main .content .share div {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: -ms-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  -moz-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-align-items: center;
-  -moz-align-items: center;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: center;
-}
-div.main .content .share {
-  background-color: rgba(152, 152, 152, 0.07);
-  padding: 1em 0;
-}
-div.main .content .share a {
-  margin: 0 6px;
-}
-kbd {
-  padding: 0.1em 0.6em;
-  border: 1px solid #ccc;
-  font-size: 11px;
-  font-family: Arial,Helvetica,sans-serif;
-  background-color: #f7f7f7;
-  color: #333;
-  -moz-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
-  -webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
-  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  display: inline-block;
-  margin: 0 0.1em;
-  text-shadow: 0 1px 0 #fff;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-/* Fonts */
-
-
-.wf-raleway-n4-active body, 
-.wf-raleway-n4-active div.header nav ul a,
-.wf-raleway-n7-active div.main .content .page-heading,
-.wf-raleway-n2-active div.main .container.f04 .content .num,
-.wf-raleway-n7-active div.main .content .markdown h1,
-.wf-raleway-n7-active div.main .content .markdown h2,
-.wf-raleway-n7-active div.main .content .markdown h3,
-.wf-raleway-n7-active div.main .content .markdown h4,
-.wf-raleway-n7-active div.main .content .markdown h5,
-.wf-raleway-n7-active div.main .content .markdown h6 {
-      font-family: 'Raleway';
-}
-
-.wf-merriweather-n3-active div.main .content .markdown {
-      font-family: 'Merriweather';
-}
-
-.wf-ubuntu-mono-n4-active div.main .content .markdown code,
-.wf-ubuntu-mono-n4-active div.main .content .markdown pre {
-      font-family: 'Ubuntu Mono';
-}
-
-
-</style>
-<style media="(min-width: 600px)">
-  body {
--webkit-justify-content: center;
--moz-justify-content: center;
--ms-justify-content: center;
-justify-content: center;
-}
-.non-narrow.zero-top-spacing {
-padding-top: 0 !important;
-}
-section {
-padding: 0 16px;
-margin-left: 100px;
-margin-right: 100px;
-
-max-width: 750px;
-
-}
-div.column {
-padding: 0 16px;
-
-max-width: 750px;
-
-}
-div.header {
-background-color: transparent;
-}
-div.header .container {
--webkit-justify-content: flex-start;
--moz-justify-content: flex-start;
--ms-justify-content: flex-start;
-justify-content: flex-start;
-}
-div.header .container .logo {
-margin: 0;
-}
-div.header-home .container .logo {
-max-width: 216px;
-margin-left: 24px;
-}
-div.header-home .name-home {
-padding-top: 30px;
-font-size: 40px;
-}
-div.header-home nav ul a {
-font-size: 18px;
-}
-div.header .content {
--webkit-align-items: flex-start;
--moz-align-items: flex-start;
--ms-align-items: flex-start;
-align-items: flex-start;
-}
-div.header .name {
-color: #333333;
-}
-div.header nav {
-font-size: 14px;
-margin-bottom: 0;
-}
-div.header nav ul {
-text-align: left;
-}
-div.header nav ul a {
-color: #666666;
-}
-div.header nav ul a:hover {
-color: #333333;
-}
-div.footer {
-background-color: transparent;
-}
-div.footer .container {
-flex-direction: row;
-}
-div.footer .container a {
-margin-left: 3px;
-margin-right: 3px;
-color: #666666;
-}
-div.footer .container a:hover {
-color: #333333;
-}
-div.footer .container a .icon {
-font-size: 18px;
-}
-div.footer .container a .icon.larger {
-font-size: 20px;
-}
-div.main .content .front-matter .date,
-div.main .content .front-matter .author,
-div.main .content .front-matter .tags,
-div.main .content .front-matter .word-count,
-div.main .content .front-matter .middot:before {
-display: initial;
-}
-div.main .container.f04 {
--webkit-justify-content: flex-start;
--moz-justify-content: flex-start;
--ms-justify-content: flex-start;
-justify-content: flex-start;
-}
-div.main .container.f04 .content {
--webkit-align-items: flex-start;
--moz-align-items: flex-start;
--ms-align-items: flex-start;
-align-items: flex-start;
-}
-div.main .container.f04 .content .num {
-margin: 0 0 10px 0;
-font-size: 32px;
-}
-div.main .container.f04 .content .detail {
-margin-bottom: 30px;
-}
-.container {
-padding: 0 30px;
-}
-div.header {
-padding-top: 60px;
-padding-bottom: 60px;
-}
-div.footer {
-padding-top: 60px;
-padding-bottom: 60px;
-}
-div.main {
-padding-top: 0;
-}
-div.main .content {
-  
-  font-size: 16px;
-  
-}
-div.main .container .content .post-item {
-display: flex;
-list-style: none;
-padding-left: 1.5em;
-}
-div.main .container .content .post-item .meta {
-display: block;
-}
-div.main .content .markdown blockquote {
-padding-right: 5rem;
-padding-left: 1.25rem;
-}
-div.main .content .navigation {
--webkit-flex-direction: row;
--moz-flex-direction: row;
--ms-flex-direction: row;
-flex-direction: row;
-}
-div.main .content .navigation div {
-margin-top: 0em;
-}
-
-</style>
-<style media="(min-width: 769px)">
-  div.main .content .markdown figure {
-width: 110%;
-margin-left: -4%;
-}
-div.main .content .markdown img {
-max-width: 110%;
-width: 110%;
-margin-left: -4%;
-}
-div.main .content .markdown pre {
-width: 110%;
-margin-left: -4%;
-}
-
-</style>
-
-<noscript>
-  <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,700,700i" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700" rel="stylesheet">
-</noscript>
-
-
-  <style type="text/css" media="screen">
-    .hljs{display:block;background:white;padding:0.5em;color:#333333;overflow-x:auto}.hljs-comment,.hljs-meta{color:#969896}.hljs-string,.hljs-variable,.hljs-template-variable,.hljs-strong,.hljs-emphasis,.hljs-quote{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attribute{color:#0086b3}.hljs-section,.hljs-name{color:#63a35c}.hljs-tag{color:#333333}.hljs-title,.hljs-attr,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr,.hljs-selector-pseudo{color:#795da3}.hljs-addition{color:#55a532;background-color:#eaffea}.hljs-deletion{color:#bd2c00;background-color:#ffecec}.hljs-link{text-decoration:underline}
-  </style>
-
-
-
-  <style type="text/css" media="screen">
-    .progressive{overflow:hidden;position:relative;background:#efefef}.progressive__img{width:100%;height:100%;transform:translateZ(0)}.progressive--not-loaded{filter:blur(30px)}.progressive--is-loaded{filter:blur(20px);animation:a .5s both}@keyframes a{0%{filter:blur(20px)}to{filter:blur(0)}}
-
-  </style>
-
-
-
-
-
-
-
-
-
-<link rel="shortcut icon"
-
-    href="https://pvik.github.io/img/favicon.ico"
-
->
-
-
-
-
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
 </head>
-
-
 <body>
+<section class="section">
+  <div class="container">
+    <nav id="nav-main" class="nav">
+      <div id="nav-name" class="nav-left">
+        <a id="nav-anchor" class="nav-item" href="https://pvik.github.io/">
+          <h1 id="nav-heading" class="title is-4">-pvik-</h1>
+        </a>
+      </div>
+      <div class="nav-right">
+        <nav id="nav-items" class="nav-item level is-mobile"><a class="level-item" aria-label="github" href='https://github.com/pvik'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="email" href='mailto:praveen@kiosa.org'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="about" href='https://pvik.github.io/about'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line>
+    
+  </svg></i>
+            </span>
+          </a><a class="level-item" aria-label="rss" href='https://pvik.github.io/index.xml'
+            target='_blank' rel='noopener'>
+            <span class="icon">
+              <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+    
+    <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>
+    
+  </svg></i>
+            </span>
+          </a></nav>
+      </div>
+    </nav>
+
+    <nav class="nav">
+      
+
+      
+    </nav>
+
+  </div>
+  <script src="https://pvik.github.io/js/navicon-shift.js"></script>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="subtitle tags is-6 is-pulled-right">
+      
+      
+<a class="subtitle is-6" href="https://pvik.github.io/tags/clojure">#Clojure</a>
 
 
-<div class="header column">
 
-    <div class="container">
-        
-        <a href="https://pvik.github.io/"><img class="logo" src="https://pvik.github.io/img/logo3.png" alt="logo"></a>
-        
-        <div class="content">
-            <a href="https://pvik.github.io/"><div class="name"><h1>-pvik-</h1></div></a>
-            <nav>
-                <ul>
-                    
-                            <li><a href="https://pvik.github.io/blog/">Blog</a></li>
-                    
-                    
-                        
-                            
-                        
-                    
-                        
-                            
-                            <li><a href="https://pvik.github.io/projects">projects</a></li>
-                            
-                        
-                    
-                    
-                        
-                    
-                        
-                            <li><a href="https://pvik.github.io/about/">About</a></li>
-                        
-                    
-                </ul>
-            </nav>
-        </div>
+  
+  | <a class="subtitle is-6" href="https://pvik.github.io/tags/commonlisp">#CommonLisp</a>
+  
+  | <a class="subtitle is-6" href="https://pvik.github.io/tags/programming">#Programming</a>
+  
+
+      
     </div>
-</div>
-
-
-
-
-
-<div class="main post non-narrow zero-top-spacing column">
-    <div class="container">
-        <div class="content">
-            <div class="front-matter">
-                <div class="title-container">
-                    <div class="page-heading">
-
+    <h2 class="subtitle is-6">August 5, 2019</h2>
+    <h1 class="title">Clojure to Common Lisp - Part 2 - Projects</h1>
     
-    Clojure to Common Lisp - Part 2 - Projects
-    
-
-</div>
-
-                </div>
-                <div class="meta">
-                    <div class="date" title="Mon Aug 5 2019 19:15:33 EST">2019-08-05</div>
-                    
-                        
-                    
-                    
-                    <div class="reading-time middot">4 minute read</div>
-                    
-                    
-                      <div class="tags">
-                    
-                        <ul>
-                          
-                            <li class="middot"><a href="https://pvik.github.io/tags/clojure">Clojure</a> </li>
-                          
-                            <li class="middot"><a href="https://pvik.github.io/tags/commonlisp">CommonLisp</a> </li>
-                          
-                            <li class="middot"><a href="https://pvik.github.io/tags/programming">Programming</a> </li>
-                          
-                        </ul>
-                    </div>
-                    <div class="tags">
-                        <ul>
-                          
-                          
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="markdown">
-                
-    
-    
-
-<p>This post is meant to be a quick start guide to setup a CL project and writing code.</p>
-
+    <div class="content">
+      <p>This post is meant to be a quick start guide to setup a CL project and writing code.</p>
 <blockquote>
 <p>If you do not have a CL Environment yet, please check out my previous <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/">post</a>.</p>
 </blockquote>
-
 <p>In Clojure you could use <code>lein</code> or <code>boot</code> to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called <a href="https://github.com/fukamachi/cl-project"><code>cl-project</code></a> to achieve the same</p>
-
 <h3 id="quick-note-about-project-location">Quick Note about Project Location</h3>
-
 <p>Modern CommonLisp implementations use <code>asdf</code> to define systems/projects. <code>asdf</code> by default will look for your projects in the following places:</p>
-
 <ul>
 <li><code>~/common-lisp</code></li>
 <li><code>~/.local/share/common-lisp/source</code></li>
 </ul>
-
 <p>If you do not want to keep all your CL code in one of the above directories, check out <a href="https://common-lisp.net/project/asdf/asdf.html#Controlling-where-ASDF-searches-for-systems">this</a> section of the <code>asdf</code> manual.</p>
-
 <h3 id="creating-a-project">Creating a Project</h3>
-
 <p>Fire up a REPL (<code>sbcl</code>), and use quicklisp to pull the <code>cl-project</code> library first.</p>
-
-<pre><code class="language-lisp">(ql:quickload &quot;cl-project&quot;)
-</code></pre>
-
-<p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can&rsquo;t find it locally, it will download it and any dependencies it needs first).</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(ql:quickload <span style="color:#e6db74">&#34;cl-project&#34;</span>)
+</code></pre></div><p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can't find it locally, it will download it and any dependencies it needs first).</p>
 <p>Now, you can use <code>make-project</code> to create a skeleton layout for your project:</p>
-
-<pre><code class="language-lisp">(cl-project:make-project #p&quot;~/common-lisp/first-app&quot; :author &quot;pvik&quot; :license &quot;MIT&quot; :depends-on '(:alexandria))
-</code></pre>
-
-<blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(cl-project:make-project <span style="color:#ae81ff">#p&#34;~/common-lisp/first-app&#34;</span> <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span> <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span> <span style="color:#e6db74">:depends-on</span> <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:alexandria</span>))
+</code></pre></div><blockquote>
 <p>You specify pathnames in CL with #p followed by the actual path enclosed in double-quotes.</p>
 </blockquote>
-
 <p>The <code>make-project</code> function needs the path for you project and also takes some optional keyed parameters. You can find all the options <a href="https://github.com/fukamachi/cl-project#parameters">here</a>.</p>
-
 <p>For our <code>first-app</code> we also included a library dependency <a href="https://common-lisp.net/project/alexandria/"><code>alexandria</code></a></p>
-
 <p>Now we should have the skeleton structure for our app in <code>~/common-lisp/first-app</code></p>
-
-<pre><code class="language-sh">$ cd ~/common-lisp/first-app
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ cd ~/common-lisp/first-app
 $ tree
 .
 ├── first-app.asd
@@ -1134,256 +143,126 @@ $ tree
     └── main.lisp
 
 2 directories, 5 files
-</code></pre>
+</code></pre></div><p>The <code>first-app.asd</code> defines our project (you can think of this like <code>project.clj</code> or <code>build.boot</code> in <code>lein</code> or <code>boot</code>) and it should like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defsystem <span style="color:#e6db74">&#34;first-app&#34;</span>
+  <span style="color:#e6db74">:version</span> <span style="color:#e6db74">&#34;0.1.0&#34;</span>
+  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
+  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
+  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;alexandria&#34;</span>)
+  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;src&#34;</span>
+                <span style="color:#e6db74">:components</span>
+                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
+  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;&#34;</span>
+  <span style="color:#e6db74">:in-order-to</span> ((test-op (test-op <span style="color:#e6db74">&#34;first-app/tests&#34;</span>))))
 
-<p>The <code>first-app.asd</code> defines our project (you can think of this like <code>project.clj</code> or <code>build.boot</code> in <code>lein</code> or <code>boot</code>) and it should like this:</p>
-
-<pre><code class="language-lisp">(defsystem &quot;first-app&quot;
-  :version &quot;0.1.0&quot;
-  :author &quot;pvik&quot;
-  :license &quot;MIT&quot;
-  :depends-on (&quot;alexandria&quot;)
-  :components ((:module &quot;src&quot;
-                :components
-                ((:file &quot;main&quot;))))
-  :description &quot;&quot;
-  :in-order-to ((test-op (test-op &quot;first-app/tests&quot;))))
-
-(defsystem &quot;first-app/tests&quot;
-  :author &quot;pvik&quot;
-  :license &quot;MIT&quot;
-  :depends-on (&quot;first-app&quot;
-               &quot;rove&quot;)
-  :components ((:module &quot;tests&quot;
-                :components
-                ((:file &quot;main&quot;))))
-  :description &quot;Test system for first-app&quot;
-  :perform (test-op (op c) (symbol-call :rove :run c)))
-</code></pre>
-
-<blockquote>
+(defsystem <span style="color:#e6db74">&#34;first-app/tests&#34;</span>
+  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
+  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
+  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;first-app&#34;</span>
+               <span style="color:#e6db74">&#34;rove&#34;</span>)
+  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;tests&#34;</span>
+                <span style="color:#e6db74">:components</span>
+                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
+  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;Test system for first-app&#34;</span>
+  <span style="color:#e6db74">:perform</span> (test-op (op c) (symbol-call <span style="color:#e6db74">:rove</span> <span style="color:#e6db74">:run</span> c)))
+</code></pre></div><blockquote>
 <p><code>cl-project</code> also included a testing framework <code>rove</code> for our tests. We will ignore this for now, and cover testing in a later blog post.</p>
 </blockquote>
-
 <p>and our <code>main.lisp</code> (under <code>src</code>) should looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defpackage first-app
+  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>))
+(in-package <span style="color:#e6db74">:first-app</span>)
 
-<pre><code class="language-lisp">(defpackage first-app
-  (:use :cl))
-(in-package :first-app)
-
-;; blah blah blah.
-</code></pre>
-
-<h3 id="writing-some-code">Writing Some Code</h3>
-
+<span style="color:#75715e">;; blah blah blah.</span>
+</code></pre></div><h3 id="writing-some-code">Writing Some Code</h3>
 <p>Let us add a function to our <code>main.lisp</code></p>
-
-<pre><code class="language-lisp">(defun hello-world ()
-  (print &quot;Hello World&quot;))
-</code></pre>
-
-<p>Let us also update the package definition of <code>first-app</code> to include <code>(:export :hello-world)</code>.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defun hello-world ()
+  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
+</code></pre></div><p>Let us also update the package definition of <code>first-app</code> to include <code>(:export :hello-world)</code>.</p>
 <p>Our <code>main.lisp</code> should look like this:</p>
-
-<pre><code class="language-lisp">(defpackage first-app
-  (:use :cl)
-  (:export :hello-world))
-(in-package :first-app)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defpackage first-app
+  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>)
+  (<span style="color:#e6db74">:export</span> <span style="color:#e6db74">:hello-world</span>))
+(in-package <span style="color:#e6db74">:first-app</span>)
 
 
 (defun hello-world ()
-  (print &quot;Hello World&quot;))
-</code></pre>
-
-<h3 id="running-our-project">Running Our Project</h3>
-
+  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
+</code></pre></div><h3 id="running-our-project">Running Our Project</h3>
 <p>Fire up a REPL and <code>require</code> our project, as long as our project is in a location <code>asdf</code> can find, you should see something like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (<span style="color:#a6e22e">require</span> <span style="color:#e6db74">&#34;first-app&#34;</span>)
+<span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
+<span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
+<span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
+<span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
 
-<pre><code class="language-lisp">* (require &quot;first-app&quot;)
-; compiling file &quot;/home/pvik/common-lisp/first-app/src/main.lisp&quot; (written 09 AUG 2019 11:44:00 AM):
-; compiling (DEFPACKAGE FIRST-APP ...)
-; compiling (IN-PACKAGE :FIRST-APP)
-; compiling (DEFUN HELLO-WORLD ...)
+<span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpAAURSO1.fasl</span>
+<span style="color:#75715e">; compilation finished in 0:00:00.001</span>
+<span style="color:#66d9ef">NIL</span>
+</code></pre></div><p>Now we can use our <code>export</code>ed functions like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (first-app:hello-world)
 
-; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpAAURSO1.fasl
-; compilation finished in 0:00:00.001
-NIL
-</code></pre>
-
-<p>Now we can use our <code>export</code>ed functions like this:</p>
-
-<pre><code class="language-lisp">* (first-app:hello-world)
-
-&quot;Hello World&quot; 
-</code></pre>
-
-<h3 id="generating-a-binary">Generating a Binary</h3>
-
+<span style="color:#e6db74">&#34;Hello World&#34;</span> 
+</code></pre></div><h3 id="generating-a-binary">Generating a Binary</h3>
 <p>You can use <code>asdf</code> to generate a binary as well. Add the following lines to you <code>.asd</code> file:</p>
-
-<pre><code class="language-lisp">:build-operation &quot;program-op&quot; ;; leave as is
-:build-pathname &quot;first-app.bin&quot;
-:entry-point &quot;first-app:hello-world&quot;	
-</code></pre>
-
-<p>under the system definition (<code>defsystem</code>) for <code>&quot;first-app&quot;</code>.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#e6db74">:build-operation</span> <span style="color:#e6db74">&#34;program-op&#34;</span> <span style="color:#75715e">;; leave as is</span>
+<span style="color:#e6db74">:build-pathname</span> <span style="color:#e6db74">&#34;first-app.bin&#34;</span>
+<span style="color:#e6db74">:entry-point</span> <span style="color:#e6db74">&#34;first-app:hello-world&#34;</span>	
+</code></pre></div><p>under the system definition (<code>defsystem</code>) for <code>&quot;first-app&quot;</code>.</p>
 <p>Now you can generate the binary from the REPL like so:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (asdf:make <span style="color:#e6db74">:first-app</span>)
+<span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
+<span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
+<span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
+<span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
 
-<pre><code class="language-lisp">* (asdf:make :first-app)
-; compiling file &quot;/home/pvik/common-lisp/first-app/src/main.lisp&quot; (written 09 AUG 2019 11:44:00 AM):
-; compiling (DEFPACKAGE FIRST-APP ...)
-; compiling (IN-PACKAGE :FIRST-APP)
-; compiling (DEFUN HELLO-WORLD ...)
-
-; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpGHU3ALSV.fasl
-; compilation finished in 0:00:00.001
+<span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpGHU3ALSV.fasl</span>
+<span style="color:#75715e">; compilation finished in 0:00:00.001</span>
 [undoing binding stack and other enclosing state... done]
 [performing final GC... done]
 [defragmenting immobile space... (fin,inst,fdefn,code,sym)=1024+932+18740+19628+24991... done]
 [saving current Lisp image into /home/pvik/common-lisp/first-app/first-app.bin:
-writing 0 bytes from the read-only space at 0x50000000
-writing 432 bytes from the static space at 0x50100000
-writing 27492352 bytes from the dynamic space at 0x1000000000
-writing 1347584 bytes from the immobile space at 0x50300000
-writing 12600064 bytes from the immobile space at 0x52100000
+writing <span style="color:#ae81ff">0</span> bytes from <span style="color:#66d9ef">the</span> read-only space at 0x50000000
+writing <span style="color:#ae81ff">432</span> bytes from <span style="color:#66d9ef">the</span> static space at 0x50100000
+writing <span style="color:#ae81ff">27492352</span> bytes from <span style="color:#66d9ef">the</span> dynamic space at 0x1000000000
+writing <span style="color:#ae81ff">1347584</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x50300000
+writing <span style="color:#ae81ff">12600064</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x52100000
 done]
-</code></pre>
-
-<p>The <code>fist-app.bin</code> should be in your project root.</p>
-
+</code></pre></div><p>The <code>fist-app.bin</code> should be in your project root.</p>
 <p>You should be setup to start coding away in your new project!</p>
 
+      
+      <div class="related">
 
-            </div>
-            
-            
-            <br>
-            <div class="navigation">
-                
-                <div>
-                    <img class="icon" src="https://pvik.github.io/img/back.svg" alt="back" />
-                    <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/">Clojure to Common Lisp - Part 1 - Getting Started</a>
-                </div>
-                
-                <div style="width: 100%;"></div>
-                
-                <div>
-                    <a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/">Clojure to Common Lisp - Part 3 - Sample CRUD App</a>
-                    <img class="icon" src="https://pvik.github.io/img/next.svg" alt="next" />
-                </div>
-                
-            </div>
-            
-            
-
-            
-            
-
-            
-
-            
-        </div>
-    </div>
+<h3>Similar articles:</h3>
+<ul>
+	
+	<li><a href="https://pvik.github.io/blog/clojure-to-common-lisp-part-1-getting-started/">Clojure to Common Lisp - Part 1 - Getting Started</a></li>
+	
+	<li><a href="https://pvik.github.io/blog/using-argon-for-password-hashes/">Using Argon for Password Hashes</a></li>
+	
+	<li><a href="https://pvik.github.io/blog/using-buddy-for-authentication-with-jwt/">Using Buddy for Authentication with JWT</a></li>
+	
+</ul>
 </div>
-
-
-
-<div class="footer column">
-    <div class="container">
-
-        
-
-        <div class="copyright">
-
-        
-            
-                <a href="https://pvik.github.io/license">Copyright © 2018-2019 Praveen Vikram</a>
-            
-        
-
-        </div>
-        <div class="icons">
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-            <a href="https://github.com/pvik" rel=me target="_blank">
-                <img class="icon" src="https://pvik.github.io/img/github.svg" alt="github" />
-            </a>
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-            <a href="mailto:praveen@kiosa.org">
-                <img class="icon" src="https://pvik.github.io/img/email.svg" alt="email" />
-            </a>
-        
-
-        
-            <a href="https://pvik.github.io/index.xml">
-                <img class="icon" src="https://pvik.github.io/img/rss.svg" alt="rss" />
-            </a>
-        
-
-        </div>
+      
     </div>
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-<script>
-  WebFont.load({
-    google: {
-      families: ['Raleway:400,600,700', 'Merriweather:300,300i,700,700i', 'Ubuntu+Mono:400,700']
-    }
-  });
-</script>
-
-
-
-  <script src="https://pvik.github.io/js/highlight.min.js" defer></script>
-  
-
-
-
-  <script src="https://pvik.github.io/js/progressively.min.js" defer></script>
-
-
-
-
-
-
-
-
-<script>
-  window.onload = function() {
     
-      hljs.initHighlighting();
-    
-    
-      progressively.init({delay: 30, throttle: 50});
-    
-    
-  };
-</script>
+  </div>
+</section>
 
+    <script src="https://pvik.github.io/js/copycode.js"></script>
+
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p></p>
+    
+      <p>Powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/ribice/kiss">Kiss</a>.</p>
+    
+  </div>
+</section>
 
 
 

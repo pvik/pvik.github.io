@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Clojure on -pvik-</title>
@@ -53,9 +53,9 @@ Clojure has also allowed me to become less intimidated with lisp in general, and
       
       <guid>https://pvik.github.io/blog/using-argon-for-password-hashes/</guid>
       <description>Include the argon2-jvm dependency in your build.boot or project.clj file.
-[de.mkammerer/argon2-jvm &amp;quot;2.5&amp;quot;]  In the module you need to use argon hashes, import the necessary classes in you namespace (ns) declaration:
-(:import (de.mkammerer.argon2 Argon2Factory Argon2Factory$Argon2Types))  Now you can generate a hash or verify if a string matches a hash like below:
-(defonce ^:private ^:const arg2-iterations 8) (defonce ^:private ^:const arg2-memory 65536) (defonce ^:private ^:const arg2-parallelism 1) (defn- argon2-hash &amp;quot;Hash string with Argon2id&amp;quot; [str-to-be-hashed] (.</description>
+[de.mkammerer/argon2-jvm &amp;#34;2.5&amp;#34;] In the module you need to use argon hashes, import the necessary classes in you namespace (ns) declaration:
+(:import (de.mkammerer.argon2 Argon2Factory Argon2Factory$Argon2Types)) Now you can generate a hash or verify if a string matches a hash like below:
+(defonce ^:private ^:const arg2-iterations 8) (defonce ^:private ^:const arg2-memory 65536) (defonce ^:private ^:const arg2-parallelism 1) (defn- argon2-hash &amp;#34;Hash string with Argon2id&amp;#34; [str-to-be-hashed] (.</description>
     </item>
     
     <item>
