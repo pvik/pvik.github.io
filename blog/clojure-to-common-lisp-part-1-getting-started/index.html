@@ -115,12 +115,13 @@ Clojure has also allowed me to become less intimidated with lisp in general, and
 <p>I will try to refrain from making arguments that one language is better than another. Both the languages are tools, so use the tool that you prefer and which allows you to solve the problem best.</p>
 </blockquote>
 <h3 id="what-is-common-lisp">What is Common Lisp?</h3>
-<p>Common lisp is a set of specification and no language called common lisp itself exists. There are several implementation of the common lisp specification like Steel Bank Common Lisp (<code>sbcl</code>), Clozure CL (<code>ccl</code>), etc. There are also paid implementations like Allegro Common Lisp, LispWorks, etc. This is different from Clojure, which is both a specification and the language.</p>
+<p>Common lisp refers to languages that conforms to the ANSI specification in document <em>ANSI INCITS 226-1994 (R2004)</em> (formerly <em>X3.226-1994 (R1999)</em>. There are several implementation of the common lisp specification like Steel Bank Common Lisp (<code>sbcl</code>), Clozure CL (<code>ccl</code>), etc. There are also paid implementations like Allegro Common Lisp, LispWorks, etc. This is different from Clojure, which is both a specification and the language.</p>
 <blockquote>
-<p><a href="https://www.cliki.net/Common+Lisp+implementation">This</a> page provides a list &amp; comparison of implementations currently still relevant.</p>
+<p><a href="https://www.cliki.net/Common+Lisp+implementation">This</a> page provides a list &amp; comparison of implementations currently still relevant.
+There was</p>
 </blockquote>
 <p>This means the first decision you will have to make when you decide to use Common Lisp, is which implementation should you use?
-Each implementation has it's own set of features. Features like if they support threads, compile to native binary, etc.</p>
+Each implementation has it&rsquo;s own set of features. Features like if they support threads, compile to native binary, etc.</p>
 <p>General advice with lispers is for beginners to pick SBCL. It is still being actively developed/maintained, provides threads, comes with a native compiler, can generate executable. This checks all the boxes for me.</p>
 <blockquote>
 <p>I assume all examples from here on are run in SBCL</p>
@@ -129,8 +130,8 @@ Each implementation has it's own set of features. Features like if they support 
 <p>First step is to install SBCL.</p>
 <p>The <a href="http://www.sbcl.org/getting.html">Getting Started</a> page on <a href="http://www.sbcl.org">SBCL</a> home page should help you with this. On Arch linux, Fedora or Ubuntu you could install the <code>sbcl</code> package. On OS X, <code>sbcl</code> is also available on <code>brew</code> or macports. For Windows there is <a href="http://www.iqool.de/lispstick.html">LispStick</a>. <em>edit: There is also <a href="https://portacle.github.io/">portacle</a> which runs on Windows and seems to be better maintained</em></p>
 <p>Second step would be to setup an IDE environment.</p>
-<p>I use Emacs for clojure development, and I can't think of any reason to switch away from Emacs for lisp development. Packages like <code>smartparens</code>, <code>rainbow-delimiters</code>, etc makes lisp development a pleasure in emacs.</p>
-<p>Along with Emacs, there is also <a href="https://www.common-lisp.net/project/slime/">SLIME</a>, which stands for &ldquo;<strong>S</strong>uperior <strong>L</strong>isp <strong>I</strong>nteraction <strong>M</strong>ode for <strong>E</strong>macs&rdquo;, from what I've read about it so far is that it is what CIDER for Clojure strives to be!</p>
+<p>I use Emacs for clojure development, and I can&rsquo;t think of any reason to switch away from Emacs for lisp development. Packages like <code>smartparens</code>, <code>rainbow-delimiters</code>, etc makes lisp development a pleasure in emacs.</p>
+<p>Along with Emacs, there is also <a href="https://www.common-lisp.net/project/slime/">SLIME</a>, which stands for &ldquo;<strong>S</strong>uperior <strong>L</strong>isp <strong>I</strong>nteraction <strong>M</strong>ode for <strong>E</strong>macs&rdquo;, from what I&rsquo;ve read about it so far is that it is what CIDER for Clojure strives to be!</p>
 <p>We will also be installing <a href="https://www.quicklisp.org/">QuickLisp</a>, which is a package manager for Common Lisp, this will allow you to pull other CL (Common Lisp) libraries from the internet and use it in your application. Quicklisp builds on another tool called <a href="https://common-lisp.net/project/asdf/"><code>asdf</code></a>, which stands for <strong>A</strong>nother <strong>S</strong>ystem <strong>D</strong>efinition <strong>F</strong>acility. <code>asdf</code> with <code>quicklisp</code> can provide features similar to <code>lein</code> or <code>boot</code>.</p>
 <p><a href="https://lisp-lang.org/learn/getting-started/">This</a> page will guide you through setting up SLIME and QuickLisp. (<code>asdf</code> comes packaged with <code>sbcl</code>)</p>
 <p>Once you have <code>sbcl</code> and QuickLisp setup you should be ready to start writing some code!</p>

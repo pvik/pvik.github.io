@@ -122,7 +122,7 @@
 <h3 id="creating-a-project">Creating a Project</h3>
 <p>Fire up a REPL (<code>sbcl</code>), and use quicklisp to pull the <code>cl-project</code> library first.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(ql:quickload <span style="color:#e6db74">&#34;cl-project&#34;</span>)
-</code></pre></div><p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can't find it locally, it will download it and any dependencies it needs first).</p>
+</code></pre></div><p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can&rsquo;t find it locally, it will download it and any dependencies it needs first).</p>
 <p>Now, you can use <code>make-project</code> to create a skeleton layout for your project:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(cl-project:make-project <span style="color:#ae81ff">#p&#34;~/common-lisp/first-app&#34;</span> <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span> <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span> <span style="color:#e6db74">:depends-on</span> <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:alexandria</span>))
 </code></pre></div><blockquote>

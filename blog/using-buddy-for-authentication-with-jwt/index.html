@@ -190,7 +190,7 @@ In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT
 <li>An authentication handler (<code>auth-handler</code>). This function should be called when you want to authenticate an incoming request (with a username and password) and generate a JWT token. We will see this being called from our <code>/login</code> route definition below in <code>buddy-sample-jwt.routes</code>.</li>
 <li>We also define our access level handlers (<code>authenticated-access</code> and <code>admin-access</code>).</li>
 </ol>
-<p>In our above code we also have <code>login?</code> from <code>user</code> namespace. This function determines if a <code>[username, password]</code> is valid. This can be whatever matches your application. For example, query the Database for the user's password-hash and match it with the hash of the password provided.</p>
+<p>In our above code we also have <code>login?</code> from <code>user</code> namespace. This function determines if a <code>[username, password]</code> is valid. This can be whatever matches your application. For example, query the Database for the user&rsquo;s password-hash and match it with the hash of the password provided.</p>
 <blockquote>
 <p>I will post an article on how to use Argon2 in your clojure app for hashing your passwords in a future post and link it here. Edit: <a href="https://pvik.github.io/blog/using-argon-for-password-hashes">Added article</a></p>
 </blockquote>
