@@ -8,8 +8,9 @@
 
 <meta property='og:title' content='Clojure to Common Lisp - Part 2 - Projects • -pvik-'>
 <meta property='og:description' content='This post is meant to be a quick start guide to setup a CL project and writing code.
- If you do not have a CL Environment yet, please check out my previous post.
- In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same'>
+If you do not have a CL Environment yet, please check out my previous post.
+In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same
+Quick Note about Project Location Modern CommonLisp implementations use asdf to define systems/projects.'>
 <meta property='og:url' content='https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/'>
 <meta property='og:site_name' content='-pvik-'>
 <meta property='og:type' content='article'><meta property='og:image' content='https://www.gravatar.com/avatar/6f32ea697d67c3c98da6f78c516a6338?s=256'><meta property='article:section' content='Blog'><meta property='article:tag' content='Clojure'><meta property='article:tag' content='CommonLisp'><meta property='article:tag' content='Programming'><meta property='article:published_time' content='2019-08-05T19:15:33-04:00'/><meta property='article:modified_time' content='2019-08-05T19:15:33-04:00'/><meta name='twitter:card' content='summary'><meta name='twitter:site' content='@'><meta name='twitter:creator' content='@'>
@@ -121,114 +122,114 @@
 <p>If you do not want to keep all your CL code in one of the above directories, check out <a href="https://common-lisp.net/project/asdf/asdf.html#Controlling-where-ASDF-searches-for-systems">this</a> section of the <code>asdf</code> manual.</p>
 <h3 id="creating-a-project">Creating a Project</h3>
 <p>Fire up a REPL (<code>sbcl</code>), and use quicklisp to pull the <code>cl-project</code> library first.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(ql:quickload <span style="color:#e6db74">&#34;cl-project&#34;</span>)
-</code></pre></div><p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can&rsquo;t find it locally, it will download it and any dependencies it needs first).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(ql:quickload <span style="color:#e6db74">&#34;cl-project&#34;</span>)
+</span></span></code></pre></div><p>QuickLisp will load <code>&quot;cl-project&quot;</code> into your REPL (if it can&rsquo;t find it locally, it will download it and any dependencies it needs first).</p>
 <p>Now, you can use <code>make-project</code> to create a skeleton layout for your project:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(cl-project:make-project <span style="color:#ae81ff">#p&#34;~/common-lisp/first-app&#34;</span> <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span> <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span> <span style="color:#e6db74">:depends-on</span> <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:alexandria</span>))
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(cl-project:make-project <span style="color:#ae81ff">#p&#34;~/common-lisp/first-app&#34;</span> <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span> <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span> <span style="color:#e6db74">:depends-on</span> <span style="color:#f92672">&#39;</span>(<span style="color:#e6db74">:alexandria</span>))
+</span></span></code></pre></div><blockquote>
 <p>You specify pathnames in CL with #p followed by the actual path enclosed in double-quotes.</p>
 </blockquote>
 <p>The <code>make-project</code> function needs the path for you project and also takes some optional keyed parameters. You can find all the options <a href="https://github.com/fukamachi/cl-project#parameters">here</a>.</p>
 <p>For our <code>first-app</code> we also included a library dependency <a href="https://common-lisp.net/project/alexandria/"><code>alexandria</code></a></p>
 <p>Now we should have the skeleton structure for our app in <code>~/common-lisp/first-app</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ cd ~/common-lisp/first-app
-$ tree
-.
-├── first-app.asd
-├── README.markdown
-├── README.org
-├── src
-│   └── main.lisp
-└── tests
-    └── main.lisp
-
-2 directories, 5 files
-</code></pre></div><p>The <code>first-app.asd</code> defines our project (you can think of this like <code>project.clj</code> or <code>build.boot</code> in <code>lein</code> or <code>boot</code>) and it should like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defsystem <span style="color:#e6db74">&#34;first-app&#34;</span>
-  <span style="color:#e6db74">:version</span> <span style="color:#e6db74">&#34;0.1.0&#34;</span>
-  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
-  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
-  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;alexandria&#34;</span>)
-  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;src&#34;</span>
-                <span style="color:#e6db74">:components</span>
-                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
-  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;&#34;</span>
-  <span style="color:#e6db74">:in-order-to</span> ((test-op (test-op <span style="color:#e6db74">&#34;first-app/tests&#34;</span>))))
-
-(defsystem <span style="color:#e6db74">&#34;first-app/tests&#34;</span>
-  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
-  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
-  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;first-app&#34;</span>
-               <span style="color:#e6db74">&#34;rove&#34;</span>)
-  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;tests&#34;</span>
-                <span style="color:#e6db74">:components</span>
-                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
-  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;Test system for first-app&#34;</span>
-  <span style="color:#e6db74">:perform</span> (test-op (op c) (symbol-call <span style="color:#e6db74">:rove</span> <span style="color:#e6db74">:run</span> c)))
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>$ cd ~/common-lisp/first-app
+</span></span><span style="display:flex;"><span>$ tree
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>├── first-app.asd
+</span></span><span style="display:flex;"><span>├── README.markdown
+</span></span><span style="display:flex;"><span>├── README.org
+</span></span><span style="display:flex;"><span>├── src
+</span></span><span style="display:flex;"><span>│   └── main.lisp
+</span></span><span style="display:flex;"><span>└── tests
+</span></span><span style="display:flex;"><span>    └── main.lisp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2 directories, 5 files
+</span></span></code></pre></div><p>The <code>first-app.asd</code> defines our project (you can think of this like <code>project.clj</code> or <code>build.boot</code> in <code>lein</code> or <code>boot</code>) and it should like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(defsystem <span style="color:#e6db74">&#34;first-app&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:version</span> <span style="color:#e6db74">&#34;0.1.0&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;alexandria&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;src&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">:components</span>
+</span></span><span style="display:flex;"><span>                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:in-order-to</span> ((test-op (test-op <span style="color:#e6db74">&#34;first-app/tests&#34;</span>))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(defsystem <span style="color:#e6db74">&#34;first-app/tests&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:author</span> <span style="color:#e6db74">&#34;pvik&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:license</span> <span style="color:#e6db74">&#34;MIT&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:depends-on</span> (<span style="color:#e6db74">&#34;first-app&#34;</span>
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;rove&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:components</span> ((<span style="color:#e6db74">:module</span> <span style="color:#e6db74">&#34;tests&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">:components</span>
+</span></span><span style="display:flex;"><span>                ((<span style="color:#e6db74">:file</span> <span style="color:#e6db74">&#34;main&#34;</span>))))
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:description</span> <span style="color:#e6db74">&#34;Test system for first-app&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:perform</span> (test-op (op c) (symbol-call <span style="color:#e6db74">:rove</span> <span style="color:#e6db74">:run</span> c)))
+</span></span></code></pre></div><blockquote>
 <p><code>cl-project</code> also included a testing framework <code>rove</code> for our tests. We will ignore this for now, and cover testing in a later blog post.</p>
 </blockquote>
 <p>and our <code>main.lisp</code> (under <code>src</code>) should looks like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defpackage first-app
-  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>))
-(in-package <span style="color:#e6db74">:first-app</span>)
-
-<span style="color:#75715e">;; blah blah blah.</span>
-</code></pre></div><h3 id="writing-some-code">Writing Some Code</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(defpackage first-app
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>))
+</span></span><span style="display:flex;"><span>(in-package <span style="color:#e6db74">:first-app</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; blah blah blah.</span>
+</span></span></code></pre></div><h3 id="writing-some-code">Writing Some Code</h3>
 <p>Let us add a function to our <code>main.lisp</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defun hello-world ()
-  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
-</code></pre></div><p>Let us also update the package definition of <code>first-app</code> to include <code>(:export :hello-world)</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(defun hello-world ()
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
+</span></span></code></pre></div><p>Let us also update the package definition of <code>first-app</code> to include <code>(:export :hello-world)</code>.</p>
 <p>Our <code>main.lisp</code> should look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(defpackage first-app
-  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>)
-  (<span style="color:#e6db74">:export</span> <span style="color:#e6db74">:hello-world</span>))
-(in-package <span style="color:#e6db74">:first-app</span>)
-
-
-(defun hello-world ()
-  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
-</code></pre></div><h3 id="running-our-project">Running Our Project</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(defpackage first-app
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:use</span> <span style="color:#e6db74">:cl</span>)
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:export</span> <span style="color:#e6db74">:hello-world</span>))
+</span></span><span style="display:flex;"><span>(in-package <span style="color:#e6db74">:first-app</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(defun hello-world ()
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">print</span> <span style="color:#e6db74">&#34;Hello World&#34;</span>))
+</span></span></code></pre></div><h3 id="running-our-project">Running Our Project</h3>
 <p>Fire up a REPL and <code>require</code> our project, as long as our project is in a location <code>asdf</code> can find, you should see something like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (<span style="color:#a6e22e">require</span> <span style="color:#e6db74">&#34;first-app&#34;</span>)
-<span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
-<span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
-<span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
-<span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
-
-<span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpAAURSO1.fasl</span>
-<span style="color:#75715e">; compilation finished in 0:00:00.001</span>
-<span style="color:#66d9ef">NIL</span>
-</code></pre></div><p>Now we can use our <code>export</code>ed functions like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (first-app:hello-world)
-
-<span style="color:#e6db74">&#34;Hello World&#34;</span> 
-</code></pre></div><h3 id="generating-a-binary">Generating a Binary</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span><span style="color:#a6e22e">*</span> (<span style="color:#a6e22e">require</span> <span style="color:#e6db74">&#34;first-app&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpAAURSO1.fasl</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compilation finished in 0:00:00.001</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">NIL</span>
+</span></span></code></pre></div><p>Now we can use our <code>export</code>ed functions like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span><span style="color:#a6e22e">*</span> (first-app:hello-world)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Hello World&#34;</span> 
+</span></span></code></pre></div><h3 id="generating-a-binary">Generating a Binary</h3>
 <p>You can use <code>asdf</code> to generate a binary as well. Add the following lines to you <code>.asd</code> file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#e6db74">:build-operation</span> <span style="color:#e6db74">&#34;program-op&#34;</span> <span style="color:#75715e">;; leave as is</span>
-<span style="color:#e6db74">:build-pathname</span> <span style="color:#e6db74">&#34;first-app.bin&#34;</span>
-<span style="color:#e6db74">:entry-point</span> <span style="color:#e6db74">&#34;first-app:hello-world&#34;</span>	
-</code></pre></div><p>under the system definition (<code>defsystem</code>) for <code>&quot;first-app&quot;</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span><span style="color:#e6db74">:build-operation</span> <span style="color:#e6db74">&#34;program-op&#34;</span> <span style="color:#75715e">;; leave as is</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">:build-pathname</span> <span style="color:#e6db74">&#34;first-app.bin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">:entry-point</span> <span style="color:#e6db74">&#34;first-app:hello-world&#34;</span>	
+</span></span></code></pre></div><p>under the system definition (<code>defsystem</code>) for <code>&quot;first-app&quot;</code>.</p>
 <p>Now you can generate the binary from the REPL like so:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (asdf:make <span style="color:#e6db74">:first-app</span>)
-<span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
-<span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
-<span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
-<span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
-
-<span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpGHU3ALSV.fasl</span>
-<span style="color:#75715e">; compilation finished in 0:00:00.001</span>
-[undoing binding stack and other enclosing state... done]
-[performing final GC... done]
-[defragmenting immobile space... (fin,inst,fdefn,code,sym)=1024+932+18740+19628+24991... done]
-[saving current Lisp image into /home/pvik/common-lisp/first-app/first-app.bin:
-writing <span style="color:#ae81ff">0</span> bytes from <span style="color:#66d9ef">the</span> read-only space at 0x50000000
-writing <span style="color:#ae81ff">432</span> bytes from <span style="color:#66d9ef">the</span> static space at 0x50100000
-writing <span style="color:#ae81ff">27492352</span> bytes from <span style="color:#66d9ef">the</span> dynamic space at 0x1000000000
-writing <span style="color:#ae81ff">1347584</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x50300000
-writing <span style="color:#ae81ff">12600064</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x52100000
-done]
-</code></pre></div><p>The <code>fist-app.bin</code> should be in your project root.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span><span style="color:#a6e22e">*</span> (asdf:make <span style="color:#e6db74">:first-app</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling file &#34;/home/pvik/common-lisp/first-app/src/main.lisp&#34; (written 09 AUG 2019 11:44:00 AM):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFPACKAGE FIRST-APP ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (IN-PACKAGE :FIRST-APP)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN HELLO-WORLD ...)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; wrote /home/pvik/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/pvik/common-lisp/first-app/src/main-tmpGHU3ALSV.fasl</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compilation finished in 0:00:00.001</span>
+</span></span><span style="display:flex;"><span>[undoing binding stack and other enclosing state... done]
+</span></span><span style="display:flex;"><span>[performing final GC... done]
+</span></span><span style="display:flex;"><span>[defragmenting immobile space... (fin,inst,fdefn,code,sym)=1024+932+18740+19628+24991... done]
+</span></span><span style="display:flex;"><span>[saving current Lisp image into /home/pvik/common-lisp/first-app/first-app.bin:
+</span></span><span style="display:flex;"><span>writing <span style="color:#ae81ff">0</span> bytes from <span style="color:#66d9ef">the</span> read-only space at 0x50000000
+</span></span><span style="display:flex;"><span>writing <span style="color:#ae81ff">432</span> bytes from <span style="color:#66d9ef">the</span> static space at 0x50100000
+</span></span><span style="display:flex;"><span>writing <span style="color:#ae81ff">27492352</span> bytes from <span style="color:#66d9ef">the</span> dynamic space at 0x1000000000
+</span></span><span style="display:flex;"><span>writing <span style="color:#ae81ff">1347584</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x50300000
+</span></span><span style="display:flex;"><span>writing <span style="color:#ae81ff">12600064</span> bytes from <span style="color:#66d9ef">the</span> immobile space at 0x52100000
+</span></span><span style="display:flex;"><span>done]
+</span></span></code></pre></div><p>The <code>fist-app.bin</code> should be in your project root.</p>
 <p>You should be setup to start coding away in your new project!</p>
 
       

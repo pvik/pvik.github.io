@@ -6,11 +6,7 @@
     <description>Recent content in Programming on -pvik-</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2019 20:18:33 -0400</lastBuildDate>
-    
-	<atom:link href="https://pvik.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 09 Aug 2019 20:18:33 -0400</lastBuildDate><atom:link href="https://pvik.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Clojure to Common Lisp - Part 3 - Sample CRUD App</title>
       <link>https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/</link>
@@ -18,8 +14,8 @@
       
       <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/</guid>
       <description>This post deals with writing a simple CRUD application in Common Lisp.
- The code for this demo project is available on github
- Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
+The code for this demo project is available on github
+Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
 Running The Application Clone the git repository into a location where asdf can find it.
 $ cd ~/common-lisp $ git clone https://github.</description>
     </item>
@@ -31,8 +27,9 @@ $ cd ~/common-lisp $ git clone https://github.</description>
       
       <guid>https://pvik.github.io/blog/clojure-to-common-lisp-part-2-projects/</guid>
       <description>This post is meant to be a quick start guide to setup a CL project and writing code.
- If you do not have a CL Environment yet, please check out my previous post.
- In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same</description>
+If you do not have a CL Environment yet, please check out my previous post.
+In Clojure you could use lein or boot to quickly create the skeleton of a project and you could start coding away. In common lisp we use a library called cl-project to achieve the same
+Quick Note about Project Location Modern CommonLisp implementations use asdf to define systems/projects.</description>
     </item>
     
     <item>

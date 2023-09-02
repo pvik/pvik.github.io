@@ -109,82 +109,82 @@ In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT
       <p><code>buddy</code> is a set of clojure modules and libraries to incorporate various security feature in your ring application. It is also fairly non-opinionated allowing you to decide how to handle various scenarios. Check out their <a href="https://github.com/funcool/buddy">github page</a> to know more about the library. Their documentation can be found <a href="https://funcool.github.io/buddy-auth/latest/">here</a>. They also have basic examples for using various authentication schemes <a href="https://github.com/funcool/buddy-auth/tree/master/examples">here</a>.</p>
 <p>In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT) and also setup access rules to make sure certain <code>routes</code> can only be accessed with specific authorization levels. If you are not familiar with JWT, <a href="https://jwt.io/introduction/">This</a> article does a good job of explaining the basics.</p>
 <p>Before we start, add the following buddy dependencies to your <code>build.boot</code> or <code>project.clj</code> file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clj" data-lang="clj">[buddy/buddy-auth <span style="color:#e6db74">&#34;2.1.0&#34;</span>]
-[buddy/buddy-core <span style="color:#e6db74">&#34;1.5.0&#34;</span>]
-[buddy/buddy-sign <span style="color:#e6db74">&#34;3.0.0&#34;</span>]
-</code></pre></div><p>Let us start off by defining a separate <code>namespace</code> to hold all our authentication/authorization code.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clj" data-lang="clj">(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.auth
-  (<span style="color:#e6db74">:require</span>
-   [buddy.sign.jwt <span style="color:#e6db74">:as</span> jwt]
-   [buddy.auth.backends.token <span style="color:#e6db74">:refer</span> [jws-backend]]
-   [buddy.auth.accessrules <span style="color:#e6db74">:refer</span> (<span style="color:#a6e22e">success</span> error)]
-   [buddy.auth <span style="color:#e6db74">:refer</span> [authenticated?]]
-   [clj-time.core <span style="color:#e6db74">:as</span> time]
-   [clojure.data.codec.base64 <span style="color:#e6db74">:as</span> b64]
-   [taoensso.timbre <span style="color:#e6db74">:as</span> log]
-   [buddy-sample-jwt.data.user <span style="color:#e6db74">:as</span> user]))
-
-<span style="color:#75715e">;; Secret used in HMAC Signing of JWT</span>
-<span style="color:#75715e">;;   New secret generated on application start</span>
-<span style="color:#75715e">;;   Take 5 random number, concatenate them and convert to base64</span>
-(<span style="color:#66d9ef">defonce </span>secret
-  (<span style="color:#a6e22e">String.</span>
-   (<span style="color:#a6e22e">b64/encode</span>
-    (<span style="color:#a6e22e">.getBytes</span>
-     (apply str (take <span style="color:#ae81ff">5</span> (<span style="color:#a6e22e">repeatedly</span> <span style="color:#f92672">#</span>(str (<span style="color:#a6e22e">rand</span>)))))))
-   <span style="color:#e6db74">&#34;UTF-8&#34;</span>))
-
-<span style="color:#75715e">;; Create an instance of auth backend.</span>
-(<span style="color:#66d9ef">def </span>auth-backend (<span style="color:#a6e22e">jws-backend</span> {<span style="color:#e6db74">:secret</span> secret <span style="color:#e6db74">:options</span> {<span style="color:#e6db74">:alg</span> <span style="color:#e6db74">:hs512</span>}}))
-
-<span style="color:#75715e">;; Semantic response helpers</span>
-(<span style="color:#66d9ef">defn </span>ok [d] {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">200</span> <span style="color:#e6db74">:body</span> d})
-(<span style="color:#66d9ef">defn </span>bad-request [d] {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">400</span> <span style="color:#e6db74">:body</span> d})
-
-(<span style="color:#66d9ef">defn </span>authenticate
-  <span style="color:#e6db74">&#34;Checks if request (with username/password :query-params)
-</span><span style="color:#e6db74">  or username/password is valid&#34;</span>
-  ([request]
-   (<span style="color:#66d9ef">let </span>[username (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:username</span>])
-         password (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:password</span>])]
-     (<span style="color:#a6e22e">authenticate</span> username password)))
-  ([username password]
-   (<span style="color:#66d9ef">if </span>(and username password)
-     (<span style="color:#a6e22e">user/login?</span> username password)
-     false)))
-
-<span style="color:#75715e">;; authentication handler used with buddy ring wrappers</span>
-(<span style="color:#66d9ef">defn </span>auth-handler
-  [request]
-  (<span style="color:#66d9ef">if </span>(<span style="color:#a6e22e">authenticate</span> request)
-    (<span style="color:#66d9ef">let </span>[username (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:username</span>])
-          password (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:password</span>])
-          claims {<span style="color:#e6db74">:user</span> (keyword username)
-			      <span style="color:#e6db74">:admin?</span> (<span style="color:#a6e22e">user/is-admin?</span> username)
-                  <span style="color:#e6db74">:exp</span> (<span style="color:#a6e22e">time/plus</span> (<span style="color:#a6e22e">time/now</span>) (<span style="color:#a6e22e">time/seconds</span> <span style="color:#ae81ff">3600</span>))}
-          token (<span style="color:#a6e22e">jwt/sign</span> claims secret {<span style="color:#e6db74">:alg</span> <span style="color:#e6db74">:hs512</span>})]
-      (<span style="color:#a6e22e">ok</span> {<span style="color:#e6db74">:token</span> token}))
-    (<span style="color:#a6e22e">bad-request</span> {<span style="color:#e6db74">:message</span> <span style="color:#e6db74">&#34;invalid auth data&#34;</span>})))
-
-<span style="color:#75715e">;; Access Level Handlers</span>
-
-(<span style="color:#66d9ef">defn </span>authenticated-access
-  <span style="color:#e6db74">&#34;Check if request coming in is authenticated with user/password
-</span><span style="color:#e6db74">  or a valid JWT token&#34;</span>
-  [request]
-  (<span style="color:#66d9ef">if </span>(or (<span style="color:#a6e22e">authenticated?</span> request)
-          (<span style="color:#a6e22e">authenticate</span> request))
-    true
-    (<span style="color:#a6e22e">error</span> <span style="color:#e6db74">&#34;access not allowed&#34;</span>)))
-	
-(<span style="color:#66d9ef">defn </span>admin-access
-  <span style="color:#e6db74">&#34;Check if request with JWT token has :is-admin? claim&#34;</span>
-  [request]
-  (<span style="color:#66d9ef">if </span>(and (<span style="color:#e6db74">:identity</span> request)
-           (<span style="color:#e6db74">:is-admin?</span> (<span style="color:#e6db74">:identity</span> request)))
-    true
-    (<span style="color:#a6e22e">error</span> <span style="color:#e6db74">&#34;requires admin access&#34;</span>)))
-</code></pre></div><p>In the above code we have 3 main pieces which buddy requires.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clj" data-lang="clj"><span style="display:flex;"><span>[buddy/buddy-auth <span style="color:#e6db74">&#34;2.1.0&#34;</span>]
+</span></span><span style="display:flex;"><span>[buddy/buddy-core <span style="color:#e6db74">&#34;1.5.0&#34;</span>]
+</span></span><span style="display:flex;"><span>[buddy/buddy-sign <span style="color:#e6db74">&#34;3.0.0&#34;</span>]
+</span></span></code></pre></div><p>Let us start off by defining a separate <code>namespace</code> to hold all our authentication/authorization code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clj" data-lang="clj"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.auth
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:require</span>
+</span></span><span style="display:flex;"><span>   [buddy.sign.jwt <span style="color:#e6db74">:as</span> jwt]
+</span></span><span style="display:flex;"><span>   [buddy.auth.backends.token <span style="color:#e6db74">:refer</span> [jws-backend]]
+</span></span><span style="display:flex;"><span>   [buddy.auth.accessrules <span style="color:#e6db74">:refer</span> (<span style="color:#a6e22e">success</span> error)]
+</span></span><span style="display:flex;"><span>   [buddy.auth <span style="color:#e6db74">:refer</span> [authenticated?]]
+</span></span><span style="display:flex;"><span>   [clj-time.core <span style="color:#e6db74">:as</span> time]
+</span></span><span style="display:flex;"><span>   [clojure.data.codec.base64 <span style="color:#e6db74">:as</span> b64]
+</span></span><span style="display:flex;"><span>   [taoensso.timbre <span style="color:#e6db74">:as</span> log]
+</span></span><span style="display:flex;"><span>   [buddy-sample-jwt.data.user <span style="color:#e6db74">:as</span> user]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; Secret used in HMAC Signing of JWT</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;;   New secret generated on application start</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;;   Take 5 random number, concatenate them and convert to base64</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defonce </span>secret
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">String.</span>
+</span></span><span style="display:flex;"><span>   (<span style="color:#a6e22e">b64/encode</span>
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">.getBytes</span>
+</span></span><span style="display:flex;"><span>     (apply str (take <span style="color:#ae81ff">5</span> (<span style="color:#a6e22e">repeatedly</span> <span style="color:#f92672">#</span>(str (<span style="color:#a6e22e">rand</span>)))))))
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;UTF-8&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; Create an instance of auth backend.</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">def </span>auth-backend (<span style="color:#a6e22e">jws-backend</span> {<span style="color:#e6db74">:secret</span> secret <span style="color:#e6db74">:options</span> {<span style="color:#e6db74">:alg</span> <span style="color:#e6db74">:hs512</span>}}))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; Semantic response helpers</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>ok [d] {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">200</span> <span style="color:#e6db74">:body</span> d})
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>bad-request [d] {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">400</span> <span style="color:#e6db74">:body</span> d})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>authenticate
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Checks if request (with username/password :query-params)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  or username/password is valid&#34;</span>
+</span></span><span style="display:flex;"><span>  ([request]
+</span></span><span style="display:flex;"><span>   (<span style="color:#66d9ef">let </span>[username (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:username</span>])
+</span></span><span style="display:flex;"><span>         password (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:password</span>])]
+</span></span><span style="display:flex;"><span>     (<span style="color:#a6e22e">authenticate</span> username password)))
+</span></span><span style="display:flex;"><span>  ([username password]
+</span></span><span style="display:flex;"><span>   (<span style="color:#66d9ef">if </span>(and username password)
+</span></span><span style="display:flex;"><span>     (<span style="color:#a6e22e">user/login?</span> username password)
+</span></span><span style="display:flex;"><span>     false)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; authentication handler used with buddy ring wrappers</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>auth-handler
+</span></span><span style="display:flex;"><span>  [request]
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">if </span>(<span style="color:#a6e22e">authenticate</span> request)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">let </span>[username (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:username</span>])
+</span></span><span style="display:flex;"><span>          password (<span style="color:#a6e22e">get-in</span> request [<span style="color:#e6db74">:params</span> <span style="color:#e6db74">:password</span>])
+</span></span><span style="display:flex;"><span>          claims {<span style="color:#e6db74">:user</span> (keyword username)
+</span></span><span style="display:flex;"><span>			      <span style="color:#e6db74">:admin?</span> (<span style="color:#a6e22e">user/is-admin?</span> username)
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">:exp</span> (<span style="color:#a6e22e">time/plus</span> (<span style="color:#a6e22e">time/now</span>) (<span style="color:#a6e22e">time/seconds</span> <span style="color:#ae81ff">3600</span>))}
+</span></span><span style="display:flex;"><span>          token (<span style="color:#a6e22e">jwt/sign</span> claims secret {<span style="color:#e6db74">:alg</span> <span style="color:#e6db74">:hs512</span>})]
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">ok</span> {<span style="color:#e6db74">:token</span> token}))
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">bad-request</span> {<span style="color:#e6db74">:message</span> <span style="color:#e6db74">&#34;invalid auth data&#34;</span>})))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">;; Access Level Handlers</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>authenticated-access
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Check if request coming in is authenticated with user/password
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  or a valid JWT token&#34;</span>
+</span></span><span style="display:flex;"><span>  [request]
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">if </span>(or (<span style="color:#a6e22e">authenticated?</span> request)
+</span></span><span style="display:flex;"><span>          (<span style="color:#a6e22e">authenticate</span> request))
+</span></span><span style="display:flex;"><span>    true
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">error</span> <span style="color:#e6db74">&#34;access not allowed&#34;</span>)))
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>admin-access
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Check if request with JWT token has :is-admin? claim&#34;</span>
+</span></span><span style="display:flex;"><span>  [request]
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">if </span>(and (<span style="color:#e6db74">:identity</span> request)
+</span></span><span style="display:flex;"><span>           (<span style="color:#e6db74">:is-admin?</span> (<span style="color:#e6db74">:identity</span> request)))
+</span></span><span style="display:flex;"><span>    true
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">error</span> <span style="color:#e6db74">&#34;requires admin access&#34;</span>)))
+</span></span></code></pre></div><p>In the above code we have 3 main pieces which buddy requires.</p>
 <ol>
 <li>An authentication backend (<code>auth-backend</code>). This will determine if your <code>buddy</code> ring wrappers (explained below) is going to use Session tokens, JWT or other authentication schemes.</li>
 <li>An authentication handler (<code>auth-handler</code>). This function should be called when you want to authenticate an incoming request (with a username and password) and generate a JWT token. We will see this being called from our <code>/login</code> route definition below in <code>buddy-sample-jwt.routes</code>.</li>
@@ -195,76 +195,74 @@ In this tutorial we will configure our webapp to use signed JSON Web Tokens (JWT
 <p>I will post an article on how to use Argon2 in your clojure app for hashing your passwords in a future post and link it here. Edit: <a href="https://pvik.github.io/blog/using-argon-for-password-hashes">Added article</a></p>
 </blockquote>
 <p>Next, let us look at how we configure our ring app to insert our <code>buddy</code> ring wrappers.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clj" data-lang="clj">(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.core
-  (<span style="color:#e6db74">:require</span> [compojure.handler        <span style="color:#e6db74">:as</span>    handler]
-            [ring.middleware.json     <span style="color:#e6db74">:refer</span> [wrap-json-response]]
-            [buddy.auth.middleware    <span style="color:#e6db74">:refer</span> [wrap-authentication wrap-authorization]]
-            [buddy.auth.accessrules   <span style="color:#e6db74">:refer</span> [wrap-access-rules]]
-            [taoensso.timbre          <span style="color:#e6db74">:as</span>    log]
-            [buddy-sample-jwt.routes  <span style="color:#e6db74">:refer</span> [app-handler access-rules]]
-            [buddy-sample-jwt.auth    <span style="color:#e6db74">:refer</span> [auth-backend]])
-  (<span style="color:#e6db74">:gen-class</span>))
-
-(<span style="color:#66d9ef">defn </span>on-error
-  [request value]
-  {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">403</span>
-   <span style="color:#e6db74">:headers</span> {}
-   <span style="color:#e6db74">:body</span> <span style="color:#e6db74">&#34;Not authorized&#34;</span>})
-
-(<span style="color:#66d9ef">def </span>app (<span style="color:#a6e22e">as-&gt;</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#39;app-handler</span> $
-           (<span style="color:#a6e22e">wrap-access-rules</span> $ {<span style="color:#e6db74">:rules</span> access-rules <span style="color:#e6db74">:on-error</span> on-error})
-           (<span style="color:#a6e22e">wrap-authorization</span> $ auth-backend)
-           (<span style="color:#a6e22e">wrap-authentication</span> $ auth-backend)
-           (<span style="color:#a6e22e">wrap-json-response</span> $)
-           (<span style="color:#a6e22e">handler/site</span> $)))
-</code></pre></div><p>We are using three <code>buddy</code> wrappers here. The <code>wrap-authorization</code> and <code>wrap-authentication</code> wrappers both take in the <code>auth-backend</code> we defined above. They also parse the JWT Token in the Authorization Header of the request and create the <code>:identity</code> key mapped to the <code>claims</code> from the JWT in the request and pass it along.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clj" data-lang="clj"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.core
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:require</span> [compojure.handler        <span style="color:#e6db74">:as</span>    handler]
+</span></span><span style="display:flex;"><span>            [ring.middleware.json     <span style="color:#e6db74">:refer</span> [wrap-json-response]]
+</span></span><span style="display:flex;"><span>            [buddy.auth.middleware    <span style="color:#e6db74">:refer</span> [wrap-authentication wrap-authorization]]
+</span></span><span style="display:flex;"><span>            [buddy.auth.accessrules   <span style="color:#e6db74">:refer</span> [wrap-access-rules]]
+</span></span><span style="display:flex;"><span>            [taoensso.timbre          <span style="color:#e6db74">:as</span>    log]
+</span></span><span style="display:flex;"><span>            [buddy-sample-jwt.routes  <span style="color:#e6db74">:refer</span> [app-handler access-rules]]
+</span></span><span style="display:flex;"><span>            [buddy-sample-jwt.auth    <span style="color:#e6db74">:refer</span> [auth-backend]])
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:gen-class</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>on-error
+</span></span><span style="display:flex;"><span>  [request value]
+</span></span><span style="display:flex;"><span>  {<span style="color:#e6db74">:status</span> <span style="color:#ae81ff">403</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">:headers</span> {}
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">:body</span> <span style="color:#e6db74">&#34;Not authorized&#34;</span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">def </span>app (<span style="color:#a6e22e">as-&gt;</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#39;app-handler</span> $
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">wrap-access-rules</span> $ {<span style="color:#e6db74">:rules</span> access-rules <span style="color:#e6db74">:on-error</span> on-error})
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">wrap-authorization</span> $ auth-backend)
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">wrap-authentication</span> $ auth-backend)
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">wrap-json-response</span> $)
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">handler/site</span> $)))
+</span></span></code></pre></div><p>We are using three <code>buddy</code> wrappers here. The <code>wrap-authorization</code> and <code>wrap-authentication</code> wrappers both take in the <code>auth-backend</code> we defined above. They also parse the JWT Token in the Authorization Header of the request and create the <code>:identity</code> key mapped to the <code>claims</code> from the JWT in the request and pass it along.</p>
 <p>The <code>wrap-access-rules</code> sets the access controls. If you do not want any access level controls, you can skip this wrapper.</p>
 <p>Finally, let us see how to set up access rules</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clj" data-lang="clj">(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.routes
-  (<span style="color:#e6db74">:require</span> [compojure.core     <span style="color:#e6db74">:refer</span> [defroutes context routes GET POST]]
-            [compojure.route    <span style="color:#e6db74">:refer</span> [not-found files resources]]
-            [ring.util.response <span style="color:#e6db74">:refer</span> [response]]
-            [taoensso.timbre    <span style="color:#e6db74">:as</span>    log]
-            [buddy-sample-jwt.auth <span style="color:#e6db74">:as</span> auth]
-            [buddy-sample-jwt.api  <span style="color:#e6db74">:as</span> api]))
-
-(<span style="color:#a6e22e">defroutes</span> api-routes
-  (<span style="color:#a6e22e">context</span> <span style="color:#e6db74">&#34;/api&#34;</span> []
-           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/instances&#34;</span> [] api/get-instancces)
-           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/ticket/:id&#34;</span> [id]
-                    (<span style="color:#a6e22e">api/get-ticket</span> id))
-           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/tickets&#34;</span> [list style qual limit page]
-                (<span style="color:#a6e22e">api/get-tickets</span> list style qual limit page))))
-
-(<span style="color:#a6e22e">defroutes</span> gen-routes 
-  (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/&#34;</span> [] <span style="color:#e6db74">&#34;Hello from Compojure!&#34;</span>)  <span style="color:#75715e">;; for testing only</span>
-  (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/login&#34;</span> [] auth/auth-handler)   <span style="color:#75715e">;; authenticate user</span>
-  (<span style="color:#a6e22e">files</span> <span style="color:#e6db74">&#34;/&#34;</span> {<span style="color:#e6db74">:root</span> <span style="color:#e6db74">&#34;target&#34;</span>})          <span style="color:#75715e">;; to serve static resources</span>
-  (<span style="color:#a6e22e">resources</span> <span style="color:#e6db74">&#34;/&#34;</span> {<span style="color:#e6db74">:root</span> <span style="color:#e6db74">&#34;target&#34;</span>})      <span style="color:#75715e">;; to serve anything else</span>
-  (<span style="color:#a6e22e">not-found</span> <span style="color:#e6db74">&#34;404 Page Not Found&#34;</span>))     <span style="color:#75715e">;; page not found</span>
-
-(<span style="color:#66d9ef">defn </span>any-access [_]
-  true)
-
-(<span style="color:#66d9ef">def </span>access-rules [{<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/login$&#34;</span>
-                    <span style="color:#e6db74">:handler</span> any-access}
-                   {<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/api/.*&#34;</span>
-                    <span style="color:#e6db74">:handler</span> auth/authenticated-access}
-				   {<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/admin/.*&#34;</span>
-                    <span style="color:#e6db74">:handler</span> auth/admin-access}])
-
-(<span style="color:#66d9ef">def </span>app-handler (<span style="color:#a6e22e">routes</span> api-routes
-                         gen-routes))
-
-</code></pre></div><p>Points to note here are</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clj" data-lang="clj"><span style="display:flex;"><span>(<span style="color:#66d9ef">ns </span>buddy-sample-jwt.routes
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:require</span> [compojure.core     <span style="color:#e6db74">:refer</span> [defroutes context routes GET POST]]
+</span></span><span style="display:flex;"><span>            [compojure.route    <span style="color:#e6db74">:refer</span> [not-found files resources]]
+</span></span><span style="display:flex;"><span>            [ring.util.response <span style="color:#e6db74">:refer</span> [response]]
+</span></span><span style="display:flex;"><span>            [taoensso.timbre    <span style="color:#e6db74">:as</span>    log]
+</span></span><span style="display:flex;"><span>            [buddy-sample-jwt.auth <span style="color:#e6db74">:as</span> auth]
+</span></span><span style="display:flex;"><span>            [buddy-sample-jwt.api  <span style="color:#e6db74">:as</span> api]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">defroutes</span> api-routes
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">context</span> <span style="color:#e6db74">&#34;/api&#34;</span> []
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/instances&#34;</span> [] api/get-instancces)
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/ticket/:id&#34;</span> [id]
+</span></span><span style="display:flex;"><span>                    (<span style="color:#a6e22e">api/get-ticket</span> id))
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/tickets&#34;</span> [list style qual limit page]
+</span></span><span style="display:flex;"><span>                (<span style="color:#a6e22e">api/get-tickets</span> list style qual limit page))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">defroutes</span> gen-routes 
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/&#34;</span> [] <span style="color:#e6db74">&#34;Hello from Compojure!&#34;</span>)  <span style="color:#75715e">;; for testing only</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">GET</span> <span style="color:#e6db74">&#34;/login&#34;</span> [] auth/auth-handler)   <span style="color:#75715e">;; authenticate user</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">files</span> <span style="color:#e6db74">&#34;/&#34;</span> {<span style="color:#e6db74">:root</span> <span style="color:#e6db74">&#34;target&#34;</span>})          <span style="color:#75715e">;; to serve static resources</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">resources</span> <span style="color:#e6db74">&#34;/&#34;</span> {<span style="color:#e6db74">:root</span> <span style="color:#e6db74">&#34;target&#34;</span>})      <span style="color:#75715e">;; to serve anything else</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">not-found</span> <span style="color:#e6db74">&#34;404 Page Not Found&#34;</span>))     <span style="color:#75715e">;; page not found</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>any-access [_]
+</span></span><span style="display:flex;"><span>  true)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">def </span>access-rules [{<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/login$&#34;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">:handler</span> any-access}
+</span></span><span style="display:flex;"><span>                   {<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/api/.*&#34;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">:handler</span> auth/authenticated-access}
+</span></span><span style="display:flex;"><span>				   {<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/admin/.*&#34;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">:handler</span> auth/admin-access}])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">def </span>app-handler (<span style="color:#a6e22e">routes</span> api-routes
+</span></span><span style="display:flex;"><span>                         gen-routes))
+</span></span></code></pre></div><p>Points to note here are</p>
 <ol>
 <li>We are defining our <code>/login</code> route to be handled with our <code>auth/auth-handler</code>. When a user accesses this endpoint with a valid <code>[username password]</code> pair, they will receive a signed JWT token, which they can use for future access calls to our server.</li>
 <li>We define our <code>access-rules</code>, which we passed to the <code>wrap-access-rules</code> wrapper. So any request a user makes to any <code>/api/*</code> endpoint will require a valid username password pair or an unexpired, signed JWT token. You can combine multiple access rules using <code>:or</code> or <code>:and</code> like so</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clj" data-lang="clj">[{<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/foo$&#34;</span>
-  <span style="color:#e6db74">:handler</span> {<span style="color:#e6db74">:and</span> [authenticated-access admin-access}}]
-
-</code></pre></div><p>Check the <a href="https://funcool.github.io/buddy-auth/latest/#access-rules">documentation</a> for more info on advanced access rules.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clj" data-lang="clj"><span style="display:flex;"><span>[{<span style="color:#e6db74">:pattern</span> <span style="color:#f92672">#</span><span style="color:#e6db74">&#34;^/foo$&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">:handler</span> {<span style="color:#e6db74">:and</span> [authenticated-access admin-access}}]
+</span></span></code></pre></div><p>Check the <a href="https://funcool.github.io/buddy-auth/latest/#access-rules">documentation</a> for more info on advanced access rules.</p>
 
       
       <div class="related">

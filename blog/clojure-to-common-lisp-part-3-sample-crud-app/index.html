@@ -8,8 +8,8 @@
 
 <meta property='og:title' content='Clojure to Common Lisp - Part 3 - Sample CRUD App • -pvik-'>
 <meta property='og:description' content='This post deals with writing a simple CRUD application in Common Lisp.
- The code for this demo project is available on github
- Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
+The code for this demo project is available on github
+Introduction We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.
 Running The Application Clone the git repository into a location where asdf can find it.
 $ cd ~/common-lisp $ git clone https://github.'>
 <meta property='og:url' content='https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/'>
@@ -119,66 +119,66 @@ $ cd ~/common-lisp $ git clone https://github.'>
 <p>We will write a simple TODO list application which will store its data in a postgres database. This application will have a basic terminal based interface.</p>
 <h3 id="running-the-application">Running The Application</h3>
 <p>Clone the git repository into a location where <code>asdf</code> can find it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd ~/common-lisp
-$ git clone https://github.com/pvik/cl-demo-crud-app.git
-$ cd cl-demo-crud-app
-</code></pre></div><p>Now start the docker image with a postgres database:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker-compose -f docker/docker-compose.yaml up
-</code></pre></div><p>Create the database tables from <code>migrations/01-setup.sql</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ psql -h localhost -U postgres -f migrations/01-setup.sql
-Password <span style="color:#66d9ef">for</span> user postgres:
-Timing is on.
-Null display is <span style="color:#e6db74">&#34;(null)&#34;</span>.
-Line style is unicode.
-Border style is 2.
-Expanded display is used automatically.
-CREATE DATABASE
-Time: 251.229 ms
-You are now connected to database <span style="color:#e6db74">&#34;sample_crud&#34;</span> as user <span style="color:#e6db74">&#34;postgres&#34;</span>.
-CREATE SCHEMA
-Time: 1.800 ms
-CREATE TABLE
-Time: 7.906 ms
-</code></pre></div><p>(Note: default password for our DB is <code>docker</code>)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cd ~/common-lisp
+</span></span><span style="display:flex;"><span>$ git clone https://github.com/pvik/cl-demo-crud-app.git
+</span></span><span style="display:flex;"><span>$ cd cl-demo-crud-app
+</span></span></code></pre></div><p>Now start the docker image with a postgres database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose -f docker/docker-compose.yaml up
+</span></span></code></pre></div><p>Create the database tables from <code>migrations/01-setup.sql</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ psql -h localhost -U postgres -f migrations/01-setup.sql
+</span></span><span style="display:flex;"><span>Password <span style="color:#66d9ef">for</span> user postgres:
+</span></span><span style="display:flex;"><span>Timing is on.
+</span></span><span style="display:flex;"><span>Null display is <span style="color:#e6db74">&#34;(null)&#34;</span>.
+</span></span><span style="display:flex;"><span>Line style is unicode.
+</span></span><span style="display:flex;"><span>Border style is 2.
+</span></span><span style="display:flex;"><span>Expanded display is used automatically.
+</span></span><span style="display:flex;"><span>CREATE DATABASE
+</span></span><span style="display:flex;"><span>Time: 251.229 ms
+</span></span><span style="display:flex;"><span>You are now connected to database <span style="color:#e6db74">&#34;sample_crud&#34;</span> as user <span style="color:#e6db74">&#34;postgres&#34;</span>.
+</span></span><span style="display:flex;"><span>CREATE SCHEMA
+</span></span><span style="display:flex;"><span>Time: 1.800 ms
+</span></span><span style="display:flex;"><span>CREATE TABLE
+</span></span><span style="display:flex;"><span>Time: 7.906 ms
+</span></span></code></pre></div><p>(Note: default password for our DB is <code>docker</code>)</p>
 <p>Open up the <code>sbcl</code> REPL and:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp"><span style="color:#a6e22e">*</span> (<span style="color:#a6e22e">require</span> <span style="color:#e6db74">&#39;cl-demo-crud-app</span>)
-WARNING: System definition file <span style="color:#ae81ff">#P&#34;/home/elric/.quicklisp/dists/quicklisp/software/cl-fad-20180430-git/cl-fad.asd&#34;</span> contains definition for system <span style="color:#e6db74">&#34;cl-fad-test&#34;</span><span style="color:#f92672">.</span> Please only define <span style="color:#e6db74">&#34;cl-fad&#34;</span> and secondary systems with a name starting with <span style="color:#e6db74">&#34;cl-fad/&#34;</span> (e.g. <span style="color:#e6db74">&#34;cl-fad/test&#34;</span>) in that file.
-<span style="color:#75715e">; compiling file &#34;/home/elric/common-lisp/cl-demo-crud-app/src/db.lisp&#34; (written 14 AUG 2019 06:19:25 PM):</span>
-<span style="color:#75715e">; compiling (DEFPACKAGE DB ...)</span>
-<span style="color:#75715e">; compiling (IN-PACKAGE :DB)</span>
-<span style="color:#75715e">; compiling (DEFVAR *TODO-TABLE* ...)</span>
-<span style="color:#75715e">; compiling (DEFSTRUCT TODO ...)</span>
-<span style="color:#75715e">; compiling (DEFUN CONNECT-DB ...)</span>
-<span style="color:#75715e">; compiling (DEFUN LIST-TO-TODO ...)</span>
-<span style="color:#75715e">; compiling (DEFMACRO GET-TODO ...)</span>
-<span style="color:#75715e">; compiling (DEFUN GET-TODO-BY-ID ...)</span>
-<span style="color:#75715e">; compiling (DEFUN GET-TODO-BY-COMPLETED ...)</span>
-<span style="color:#75715e">; compiling (DEFMETHOD INSERT ...)</span>
-
-<span style="color:#75715e">; wrote /home/elric/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/elric/common-lisp/cl-demo-crud-app/src/db-tmpGHU3ALSV.fasl</span>
-<span style="color:#75715e">; compilation finished in 0:00:00.033</span>
-<span style="color:#75715e">; compiling file &#34;/home/elric/common-lisp/cl-demo-crud-app/src/main.lisp&#34; (written 14 AUG 2019 06:19:25 PM):</span>
-<span style="color:#75715e">; compiling (DEFPACKAGE CL-DEMO-CRUD-APP ...)</span>
-<span style="color:#75715e">; compiling (IN-PACKAGE :CL-DEMO-CRUD-APP)</span>
-<span style="color:#75715e">; compiling (DEFPARAMETER *ALLOWED-COMMANDS* ...)</span>
-<span style="color:#75715e">; compiling (DEFUN SHOW ...)</span>
-<span style="color:#75715e">; compiling (DEFUN NEW ...)</span>
-<span style="color:#75715e">; compiling (DEFUN COMPLETED ...)</span>
-<span style="color:#75715e">; compiling (DEFUN EDIT ...)</span>
-<span style="color:#75715e">; compiling (DEFUN APP-READ ...)</span>
-<span style="color:#75715e">; compiling (DEFUN APP-EVAL ...)</span>
-<span style="color:#75715e">; compiling (DEFUN PRINT-TODO ...)</span>
-<span style="color:#75715e">; compiling (DEFUN PRINT-TODO-DETAIL ...)</span>
-<span style="color:#75715e">; compiling (DEFUN PRINT-TODO-LIST ...)</span>
-<span style="color:#75715e">; compiling (DEFUN REPL ...)</span>
-<span style="color:#75715e">; compiling (DEFUN MAIN ...)</span>
-
-<span style="color:#75715e">; wrote /home/elric/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/elric/common-lisp/cl-demo-crud-app/src/main-tmpAAURSO1.fasl</span>
-<span style="color:#75715e">; compilation finished in 0:00:00.011</span>
-(<span style="color:#e6db74">&#34;SB-ROTATE-BYTE&#34;</span>)
-</code></pre></div><p>Finally start the application in the REPL:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(cl-demo-crud-app:main)
-</code></pre></div><h3 id="the-user-interface">The User Interface</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span><span style="color:#a6e22e">*</span> (<span style="color:#a6e22e">require</span> <span style="color:#e6db74">&#39;cl-demo-crud-app</span>)
+</span></span><span style="display:flex;"><span>WARNING: System definition file <span style="color:#ae81ff">#P&#34;/home/elric/.quicklisp/dists/quicklisp/software/cl-fad-20180430-git/cl-fad.asd&#34;</span> contains definition for system <span style="color:#e6db74">&#34;cl-fad-test&#34;</span><span style="color:#f92672">.</span> Please only define <span style="color:#e6db74">&#34;cl-fad&#34;</span> and secondary systems with a name starting with <span style="color:#e6db74">&#34;cl-fad/&#34;</span> (e.g. <span style="color:#e6db74">&#34;cl-fad/test&#34;</span>) in that file.
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling file &#34;/home/elric/common-lisp/cl-demo-crud-app/src/db.lisp&#34; (written 14 AUG 2019 06:19:25 PM):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFPACKAGE DB ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (IN-PACKAGE :DB)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFVAR *TODO-TABLE* ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFSTRUCT TODO ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN CONNECT-DB ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN LIST-TO-TODO ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFMACRO GET-TODO ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN GET-TODO-BY-ID ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN GET-TODO-BY-COMPLETED ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFMETHOD INSERT ...)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; wrote /home/elric/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/elric/common-lisp/cl-demo-crud-app/src/db-tmpGHU3ALSV.fasl</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compilation finished in 0:00:00.033</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling file &#34;/home/elric/common-lisp/cl-demo-crud-app/src/main.lisp&#34; (written 14 AUG 2019 06:19:25 PM):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFPACKAGE CL-DEMO-CRUD-APP ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (IN-PACKAGE :CL-DEMO-CRUD-APP)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFPARAMETER *ALLOWED-COMMANDS* ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN SHOW ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN NEW ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN COMPLETED ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN EDIT ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN APP-READ ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN APP-EVAL ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN PRINT-TODO ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN PRINT-TODO-DETAIL ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN PRINT-TODO-LIST ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN REPL ...)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compiling (DEFUN MAIN ...)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; wrote /home/elric/.cache/common-lisp/sbcl-1.5.3-linux-x64/home/elric/common-lisp/cl-demo-crud-app/src/main-tmpAAURSO1.fasl</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">; compilation finished in 0:00:00.011</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#e6db74">&#34;SB-ROTATE-BYTE&#34;</span>)
+</span></span></code></pre></div><p>Finally start the application in the REPL:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(cl-demo-crud-app:main)
+</span></span></code></pre></div><h3 id="the-user-interface">The User Interface</h3>
 <p>The terminal interface has 5 commands</p>
 <ul>
 <li><code>show</code>
@@ -193,53 +193,53 @@ WARNING: System definition file <span style="color:#ae81ff">#P&#34;/home/elric/.
 <li><code>quit</code></li>
 </ul>
 <p>A sample of how the user interface works is as shown below:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Connected to postgres@localhost/sample_crud!Welcome!
-&gt; show
-
-&gt; new
-Todo: test1
-Note: test 1 notes
-inserting test1
-Created Todo 1
-&gt; sjow
-Unknown Command
-&gt; show
-ID:1 [ ] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt; &gt;
-&gt; show id 1
-ID:1 [ ] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt; &gt;
-Note: test 1 notes
-&gt; completed 1
-updating record 1
-&gt; show
-
-&gt; show completed
-ID:1 [x] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt;2019-08-14T19:20:11.000000-04:00&gt;
-</code></pre></div><h3 id="interacting-with-the-db">Interacting with the DB</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Connected to postgres@localhost/sample_crud!Welcome!
+</span></span><span style="display:flex;"><span>&gt; show
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&gt; new
+</span></span><span style="display:flex;"><span>Todo: test1
+</span></span><span style="display:flex;"><span>Note: test 1 notes
+</span></span><span style="display:flex;"><span>inserting test1
+</span></span><span style="display:flex;"><span>Created Todo 1
+</span></span><span style="display:flex;"><span>&gt; sjow
+</span></span><span style="display:flex;"><span>Unknown Command
+</span></span><span style="display:flex;"><span>&gt; show
+</span></span><span style="display:flex;"><span>ID:1 [ ] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt; &gt;
+</span></span><span style="display:flex;"><span>&gt; show id 1
+</span></span><span style="display:flex;"><span>ID:1 [ ] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt; &gt;
+</span></span><span style="display:flex;"><span>Note: test 1 notes
+</span></span><span style="display:flex;"><span>&gt; completed 1
+</span></span><span style="display:flex;"><span>updating record 1
+</span></span><span style="display:flex;"><span>&gt; show
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&gt; show completed
+</span></span><span style="display:flex;"><span>ID:1 [x] test1                          &lt;2019-08-14T19:19:56.000000-04:00&gt; &lt;2019-08-14T19:20:11.000000-04:00&gt;
+</span></span></code></pre></div><h3 id="interacting-with-the-db">Interacting with the DB</h3>
 <p>We use the <a href="https://github.com/marijnh/Postmodern">postmodern</a> library to interact with our postgres DB.</p>
 <p><code>postmodern:*database*</code> is a package level variable that holds a database connection object.</p>
 <p>You can use the <code>connect-toplevel</code> or <code>connect</code> functions to connect to the DB. Once the <code>*database*</code> variable is set with a valid connection, all other DB interaction functions will use it.</p>
 <p><code>postmodern</code> also defines queries in <code>s-sql</code>, which is very similar to writing queries using <a href="https://github.com/jkk/honeysql"><code>honeysql</code></a> for clojure.</p>
 <p>Some of the <code>s-sql</code> statements from the app are as follows, and are fairly straight forward</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cl" data-lang="cl">(<span style="color:#e6db74">:select</span> <span style="color:#e6db74">&#39;id</span> <span style="color:#e6db74">&#39;item</span> <span style="color:#e6db74">&#39;note</span> <span style="color:#e6db74">&#39;completed</span> <span style="color:#e6db74">&#39;create_date</span> <span style="color:#e6db74">&#39;completed_date</span>
-	<span style="color:#e6db74">:from</span> *todo-table*
-	<span style="color:#e6db74">:where</span> (<span style="color:#e6db74">:=</span> <span style="color:#e6db74">&#39;id</span> id)) 
-
-(<span style="color:#e6db74">:update</span> *todo-table*
-	<span style="color:#e6db74">:set</span>
-	<span style="color:#e6db74">&#39;item</span> item <span style="color:#e6db74">&#39;note</span> note <span style="color:#e6db74">&#39;completed</span> completed
-	<span style="color:#e6db74">&#39;create_date</span> created-date
-	<span style="color:#e6db74">&#39;completed_date</span> completed-date
-	<span style="color:#e6db74">:where</span> (<span style="color:#e6db74">:=</span> <span style="color:#e6db74">&#39;id</span> id))
-</code></pre></div><p>Finally, we use <code>postmodern:query</code> to run queries against the database</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cl" data-lang="cl"><span style="display:flex;"><span>(<span style="color:#e6db74">:select</span> <span style="color:#e6db74">&#39;id</span> <span style="color:#e6db74">&#39;item</span> <span style="color:#e6db74">&#39;note</span> <span style="color:#e6db74">&#39;completed</span> <span style="color:#e6db74">&#39;create_date</span> <span style="color:#e6db74">&#39;completed_date</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:from</span> *todo-table*
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:where</span> (<span style="color:#e6db74">:=</span> <span style="color:#e6db74">&#39;id</span> id)) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#e6db74">:update</span> *todo-table*
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:set</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#39;item</span> item <span style="color:#e6db74">&#39;note</span> note <span style="color:#e6db74">&#39;completed</span> completed
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#39;create_date</span> created-date
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#39;completed_date</span> completed-date
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:where</span> (<span style="color:#e6db74">:=</span> <span style="color:#e6db74">&#39;id</span> id))
+</span></span></code></pre></div><p>Finally, we use <code>postmodern:query</code> to run queries against the database</p>
 <p>The <code>query</code> to insert a row with a parameterized values is as follows</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lisp" data-lang="lisp">(postmodern:query
-  (<span style="color:#e6db74">:insert-into</span> *todo-table*
-	<span style="color:#e6db74">:set</span> <span style="color:#e6db74">&#39;item</span> <span style="color:#e6db74">&#39;$1</span> <span style="color:#e6db74">&#39;note</span> <span style="color:#e6db74">&#39;$2</span> <span style="color:#e6db74">&#39;completed</span> <span style="color:#e6db74">&#39;$3</span>
-		<span style="color:#e6db74">&#39;create_date</span> <span style="color:#e6db74">&#39;$4</span> <span style="color:#e6db74">&#39;completed_date</span> <span style="color:#e6db74">&#39;$5</span>
-	<span style="color:#e6db74">:returning</span> <span style="color:#e6db74">&#39;id</span>)
-   item note completed created-date completed-date
-   <span style="color:#e6db74">:single</span>)))
-</code></pre></div><p>The <code>:single</code> keyword parameter to <code>query</code> is useful in situation where a single value is being returned from the DB (like when using <code>postgres</code>'s <code>RETURNING</code> keyword)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(postmodern:query
+</span></span><span style="display:flex;"><span>  (<span style="color:#e6db74">:insert-into</span> *todo-table*
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:set</span> <span style="color:#e6db74">&#39;item</span> <span style="color:#e6db74">&#39;$1</span> <span style="color:#e6db74">&#39;note</span> <span style="color:#e6db74">&#39;$2</span> <span style="color:#e6db74">&#39;completed</span> <span style="color:#e6db74">&#39;$3</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#39;create_date</span> <span style="color:#e6db74">&#39;$4</span> <span style="color:#e6db74">&#39;completed_date</span> <span style="color:#e6db74">&#39;$5</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">:returning</span> <span style="color:#e6db74">&#39;id</span>)
+</span></span><span style="display:flex;"><span>   item note completed created-date completed-date
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">:single</span>)))
+</span></span></code></pre></div><p>The <code>:single</code> keyword parameter to <code>query</code> is useful in situation where a single value is being returned from the DB (like when using <code>postgres</code>&rsquo;s <code>RETURNING</code> keyword)</p>
 
       
       <div class="related">
